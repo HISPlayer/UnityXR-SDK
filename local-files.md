@@ -1,6 +1,6 @@
 # Playing Local Files
 
-HISPlayer Meta Quest SDK for Unity can play local content the device's storage, the [**Unity Streaming Assets**](./local-files.md#Unity-Streaming-Assets) and the [**Persistent Data Path**](./local-files.md#Persistent-Data-Path) (application's path). 
+HISPlayer SDK can play local content the device's storage, the [**Unity Streaming Assets**](./local-files.md#Unity-Streaming-Assets) and the [**Persistent Data Path**](./local-files.md#Persistent-Data-Path) (application's path). 
 
 <br>
 
