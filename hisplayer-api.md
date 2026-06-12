@@ -498,13 +498,13 @@ Establishes the amount of logs to be shown. The log levels are represented as an
 Get the available codecs list on the device. You may call this API before or after **SetUpPlayer**.
 
 #### void SetExternalSurface(int playerIndex, IntPtr surface)
-Set the external surface of a certain player to be used. This API will change the internal external surface if it already has been set before. Use this API when you change the overlay shape by passing the new surface. Please call this API after **OVROverlay.ExternalSurfaceObjectCreated** callback has been triggered and after **SetUpPlayer**.
+Set the external surface of a certain player to be used. This API will change the internal external surface if it already has been set before. Use this API when you change the overlay shape by passing the new surface. Please call this API after **SetUpPlayer** and you have a valid new surface.
 
 #### void ReleaseExternalSurface(int playerIndex)
-Release the external surface from a certain player. This API is optional, only call it before you setting OVROverlay enabled to false or before destroying it during runtime. Please call this API after **SetUpPlayer**.
+Release the external surface from a certain player. This API is optional, only call it before destroying the surface during runtime. Please call this API after **SetUpPlayer**.
 
 #### void SetStereoscopicRendering(int playerIndex, HISPlayerStereoMode stereoMode, ref bool overrideRect, ref Rect srcRectLeft, ref Rect srcRectRight, ref Rect destRectLeft, ref Rect destRectRight)
-Set stereoscopic rendering side by side or top/bottom. Only supported with external surface rendering mode. You may call this API after calling **SetUpPlayer**. The parameters marked with ref keyword can be retrieved from public properties of OVROverlay. Usage example: 
+Set stereoscopic rendering side by side or top/bottom. Only supported with external surface rendering mode. You may call this API after calling **SetUpPlayer**. The parameters marked with ref keyword can be retrieved from public properties such as OVROverlay for Meta Quest. Usage example: 
 ```
 SetStereoscopicRendering(streamIndex, HISPlayerStereoMode.LeftRight, ref overlay.overrideTextureRectMatrix, ref overlay.srcRectLeft, ref overlay.srcRectRight, ref overlay.destRectLeft, ref overlay.destRectRight);
 ```
