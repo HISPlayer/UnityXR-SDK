@@ -3,7 +3,7 @@
 In the video streaming industry, the DRM (Digital Rights Management) makes possible a secure distribution of contents over the network.
 Encrypted content is prepared using an encryption server and stored in a content library. The encrypted content is streamed or downloaded from the content library to client devices via content servers. Licenses to view the content are obtained from the License Server.
 
-The HISPlayer Unity Video Player SDK for Meta Quest supports [Widevine DRM](https://www.widevine.com/solutions/widevine-drm) and provides an API to the users for usage of the MediaDRM module.
+The HISPlayer SDK supports [Widevine DRM](https://www.widevine.com/solutions/widevine-drm) and provides an API to the users for usage of the MediaDRM module.
 
 Supported maximum DRM protected video resolutions:
  * DRM L1 (External Surface render mode)
@@ -42,5 +42,5 @@ Belos is an example of the usage of the DRM fields in the editor with different 
 </p>
 
 ## Widevine L1
-If you need to play Widevine L1 content, please refer to [HISPlayer Meta Quest SDK Sample](https://hisplayer.github.io/UnityMetaQuest-SDK/#/setup-guide?id=_21-import-hisplayer-meta-quest-sdk-sample)
+Widevine L1 is supported for Meta Quest device only. If you need to play Widevine L1 content, please refer to [HISPlayer Meta Quest SDK Sample](https://hisplayer.github.io/UnityMetaQuest-SDK/#/setup-guide?id=_21-import-hisplayer-meta-quest-sdk-sample)
 
