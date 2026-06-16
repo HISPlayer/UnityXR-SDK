@@ -181,9 +181,7 @@ This scene demonstrates high-resolution video playback using `ExternalSurface` m
 
 #### 360° Scene
 
-**Important:** The 360° scene **does not work** in `ExternalSurface` mode due to limitations of the Android Surface API with equirectangular mesh projections.  
-
-For this scene, the **RenderScreen** GameObject only has a **Mesh Renderer** (no Composition Layer or Source Textures), and the Mesh Filter is a **Sphere**. You must not use `ExternalSurface` mode.
+This scene demonstrates 360° video playback using **RenderTexture** mode. The `RenderScreen` GameObject uses a **Sphere** as its Mesh Filter and only has a **Mesh Renderer** (no Composition Layer or Source Textures). This is the recommended configuration for equirectangular projections.
 
 #### Ambisonic Audio Scene
 
