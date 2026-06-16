@@ -126,19 +126,19 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
  
 ## 2.1 Import HISPlayer VR SDK Sample
 
-Please, download the sample here: [**HISPlayer VR SDK Sample**](https://downloads.hisplayer.com/Unity/VR/HISPlayer_VR_SDK_Sample.unitypackage) (no need to download it if you have received it in the email). 
+Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/VR/HISPlayer_VR_SDK_Sample.unitypackage) (no need to download it if you have received it in the email). 
 
 Before using the sample, please make sure you have followed the above steps to set-up your Unity project for  and HISPlayer SDK. To use the sample, please follow these steps :
   - Configure OpenXR
   - Import HISPlayer SDK
   - Import HISPlayer VR SDK Sample
-  - Open Assets/HISPlayerVRSample/Scenes/HISPlayerVRSDKSample.unity
+  - Open Assets/OpenXRSample/Scenes/HEVC_8K.unity
   - Import TextMeshPro. Go to Unity Window > TextMeshPro > Import TMP Essential Resources
   - If you received a license key from HISPlayer, input the license key through the Inspector Unity window: **StreamController GameObject > HISPlayerSample component > License Key**
   - Open File > Build Settings > Add Open Scenes
   - Build and Run
 
-To check how to set up the SDK and API usage, please refer to Assets/HISPlayerVRSDKSample/Scripts/Sample/**HISPlayerSample.cs** and **StreamController** GameObject in the Editor.
+To check how to set up the SDK and API usage, please refer to Assets/OpenXRSample/Scripts/Sample/**HISPlayerSample.cs** and **StreamController** GameObject in the Editor.
 
 ## Sample Explanation and SDK Usage
 
@@ -191,7 +191,7 @@ For information about Ambisonic audio support, please refer to [Ambisonic](/ambi
 
 ### Script
 
-Please check Assets/HISPlayerOpenXRSample/Scripts/Sample/**HISPlayerSample.cs** script. The script must inherit from **HISPlayerManager**. It is necessary to add the **'using HISPlayerAPI;'** dependency
+Please check Assets/OpenXRSample/Scripts/Sample/**HISPlayerSample.cs** script. The script must inherit from **HISPlayerManager**. It is necessary to add the **'using HISPlayerAPI;'** dependency
 
 ```C#
 using System.Collections;
