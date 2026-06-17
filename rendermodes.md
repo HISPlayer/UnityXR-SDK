@@ -1,50 +1,147 @@
-# Material / RawImage / RenderTexture Rendering Mode
-It is also possible to render the video to **Material**  / **RawImage** / **RenderTexture** without the recommended **externalSurface** render mode with compositor layer.
+# RenderModes
 
-## <ins>Material</ins>
-Create a new Material from **Assets > Create > Material** and attach it to the GameObject that is going to be used as screen and to the stream controller component. 
+HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications on Android is **Composition Layer**, which leverages the OpenXR composition layer for optimal performance and latency. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available for 2D UI or non‑XR scenarios.
 
-You can also use the **Resources > Materials > HISPlayerDefaultMaterial.mat** we provide in our package. 
+## Composition Layer
 
-In the HISPlayer multistream properties, set the **RenderMode** as **Material**.
+This mode uses **XR Composition Layers** to render video directly onto a composition layer, bypassing the main render pipeline for improved performance in XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Meta Quest, Pico, etc.).
 
-<p align="center">
-<img width=50% alt="image" src="https://github.com/HISPlayer/UnityAndroid-SDK/assets/47497948/eacab2a8-7cee-4218-add9-98672f250540">
-<img width=50% alt="image" src="https://github.com/HISPlayer/UnityAndroid-SDK/assets/47497948/756b60e7-46f6-4efd-9ced-4221a2a782df">
-</p>
+### Setup
 
-### Linear Color Space Usage
-If you use Linear Color Space in the Unity project settings, please use **HISPlayerDefaultMaterial.mat** in **Packages/HISPlayerSDK/HisPlayer/Resources/Materials/**. 
-It uses the **HISPlayerDefaultShader.shader** that will fix color issue with Linear Color Space.
-
-## <ins>Raw Image</ins>
-This action will be related to Unity’s Canvas. If there is not a Canvas created yet, creating a **Raw Image** will create one automatically.
-
-For the creation, select **GameObject > UI > Raw Image**. Once it is created, attach it to the stream controller component.
-
-In the HISPlayer multistream properties, set the **RenderMode** as **RawImage**.
+1. Create an empty GameObject.
+2. Attach the following components to it:
+   - **Composition Layer** (from the XR Composition Layers package)
+   - **Source Textures** (from the XR Composition Layers package)
 
 <p align="center">
-<img width="600" alt="image" src="https://github.com/HISPlayer/UnityAndroid-SDK/assets/47497948/af854bfb-215e-4ec5-bc6e-2c3ad4f0321b">
+  <img src="https://github.com/user-attachments/assets/03e6f18d-983b-448a-9f37-ef94ad7a79cd" alt="texto" width="50%" style="height: auto;" />
 </p>
 
-### Linear Color Space Usage
-If you use Linear Color Space in the Unity project settings, please attach **HISPlayerDefaultMaterialRawImage.mat** in **Packages/HISPlayerSDK/HisPlayer/Resources/Materials/** to the material attribute of the RawImage component.
-It uses the **HISPlayerDefaultShaderRawImage.shader** that will fix color issue with Linear Color Space.
-
-## <ins>RenderTexture</ins>
-For this you can use the RenderTexture we provide or create a RenderTexture from zero. In the first case, go to the Resources folder of our package and attach the **Resources > Materials > HISPlayerDefaultMaterialRenderTexture.mat** to the GameObject that is going to be used as screen and the **Resources > RenderTextures > HISPlayerRenderTexture.renderTexture** to the stream controller component.
-
-For creating it from zero, select **Assets > Create > Render Texutre** and then create a **Material** referencing the **Render Texture**. This last action can be done automatically by grabbing the **Render Texture** and dropping it at the end of a GameObject's Inspector with the component **Mesh Renderer** with **Material field empty**. This will create the new material inside a **Materials** folder. 
-
-Once all this process it’s done, associate the **RenderTexture** to the script component.
-
-In the HISPlayer multistream properties, set the **RenderMode** as **RenderTexture**.
+3. In your script (inheriting from `HISPlayerManager`) set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
 
 <p align="center">
-<img src="https://github.com/HISPlayer/UnityiOS-SDK/assets/47497948/a0f26bc1-c7b1-432e-ad87-1a2d203d32c8">
+  <img src="https://github.com/user-attachments/assets/e0c0e141-e3df-4c06-8c1b-241ba5e6615a" alt="texto" width="50%" style="height: auto;" />
 </p>
 
-### Linear Color Space Usage
-If you use Linear Color Space in the Unity project settings, please use **HISPlayerDefaultRenderTexture.renderTexture** in **Packages/HISPlayerSDK/HisPlayer/Resources/RenderTextures/**. 
-This file is a custom RenderTexture with the attached **HISPlayerDefaultMaterialRenderTexture.mat** that will fix color issue with Linear Color Space.
+4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream. The following example shows how to do this:
+
+```C#
+[SerializeField] private GameObject renderScreen;
+private IEnumerator SetUpExternalSurface()
+{
+    CompositionLayer layer = renderScreen.GetComponent<CompositionLayer>();
+
+    IntPtr surfacePtr = IntPtr.Zero;
+    int maxAttempts = 10;
+    int attempts = 0;
+
+    while (surfacePtr == IntPtr.Zero && attempts < maxAttempts)
+    {
+        yield return new WaitForEndOfFrame();
+        surfacePtr = OpenXRLayerUtility.GetLayerAndroidSurfaceObject(layer.GetInstanceID());
+        attempts++;
+    }
+
+    if (surfacePtr != IntPtr.Zero)
+    {
+        multiStreamProperties[streamIndex].externalSurface = surfacePtr;
+    }
+    SetUpPlayer();
+}
+```
+
+> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer API.
+
+### Retrieving the Android Surface
+
+The script uses the `OpenXRLayerUtility.GetLayerAndroidSurfaceObject()` method to obtain the native surface pointer from the `CompositionLayer` and assigns it to the `externalSurface` field before calling `SetUpPlayer()`.
+
+### Linear Color Space
+
+No additional shader changes are required for Composition Layer mode.
+
+## RenderTexture
+
+This mode renders video to a `RenderTexture`, which can then be displayed on any 3D object or UI element. It is suitable for both XR and non‑XR projects.
+
+### Setup
+
+1. Create a **RenderTexture** asset via **Assets > Create > RenderTexture**.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bc948402-e5aa-45eb-aeae-ad2541282448" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+2. Create a **Material**, assign the **RenderTexture** to its `_MainTex property`, and ensure it uses the `HISPlayer/HISPlayerDefaultShader` shader for correct video rendering.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0bdf3ff0-1fb5-44bd-8208-a02246bf4cd4" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+3. Set the `renderMode` to `HISPlayerRenderMode.RenderTexture` in the `MultiStreamProperties` and assign the **RenderTexture** to the `renderTexture` field in your `HISPlayerManager` script.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/721fcfd2-bb79-433b-baac-d098be16b1ca" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+4. Assign the created Material to the MeshRenderer (or the appropriate renderer component) of the GameObject that will display the video.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b68f8b03-8214-44c7-85a4-b3cb31470130" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+> **Tip:** Pre‑configured assets are available in the package:
+> - **RenderTexture:** `Packages/HISPlayerSDK/HisPlayer/Resources/RenderTextures/HISPlayerRenderTexture.renderTexture`
+> - **Material:** `Packages/HISPlayerSDK/HisPlayer/Resources/Materials/HISPlayerDefaultMaterialRenderTexture.mat` (already uses the correct shader)
+
+### Linear Color Space
+
+For **Linear Color Space** projects, it is essential to use the **`HISPlayer/HISPlayerDefaultShader`** shader in your Material to correct color issues. The pre‑configured Material (`HISPlayerDefaultMaterialRenderTexture.mat`) already includes this shader.
+
+## Material
+
+This mode renders video directly onto a standard Unity **Material**, which can be applied to any 3D object with a `MeshRenderer`.
+
+### Setup
+
+1. Create a **Material** and ensure it uses the `HISPlayer/HISPlayerDefaultShader` shader for correct video rendering.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6361eead-28fc-45e7-9e85-05d43e5068a6" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+2. Set the `renderMode` to `HISPlayerRenderMode.Material` in the `MultiStreamProperties` and assign the **Material** to the `material` field in your `HISPlayerManager` script.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b9a87c0b-4617-4708-8c96-3f26e928010b" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+3. Assign the created Material to the MeshRenderer (or the appropriate renderer component) of the GameObject that will display the video.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b68f8b03-8214-44c7-85a4-b3cb31470130" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+> **Tip:** Pre‑configured assets are available in the package:
+> - **Material:** `Packages/HISPlayerSDK/HisPlayer/Resources/Materials/HISPlayerDefaultMaterial.mat` (already uses the correct shader)
+
+### Linear Color Space
+
+For **Linear Color Space** projects, it is essential to use the **`HISPlayer/HISPlayerDefaultShader`** shader in your Material to correct color issues. The pre‑configured Material (`HISPlayerDefaultMaterial.mat`) already includes this shader.
+
+## RawImage
+
+This mode renders video to a **RawImage** component on a Unity UI Canvas, ideal for 2D overlays or in‑game menus.
+
+### Setup
+
+1. Create a **RawImage** UI element (**GameObject > UI > Raw Image**). A Canvas will be created automatically if none exists.
+2. Set the `renderMode` to `HISPlayerRenderMode.RawImage` in the `MultiStreamProperties` and assign the **RawImage** to the `rawImage` field in your `HISPlayerManager` script.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c3d4af99-547e-4508-b92b-989fa45b0df0" alt="texto" width="50%" style="height: auto;" />
+</p>
+
+### Linear Color Space
+
+No additional shader changes are required for Raw Image mode.
