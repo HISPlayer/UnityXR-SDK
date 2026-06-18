@@ -1,4 +1,4 @@
-# HISPlayer Unity VR SDK
+# HISPlayer Unity XR SDK
 
 HISPlayer is the most advanced video streaming player for Unity, supporting local, VOD and live contents. It enables premium DASH and HLS video streaming inside your games and metaverses on VR headsets. We include the support of 8K video playback, Widevine DRM protection for premium contents and advanced features such as multistream or automatic bitrate adaptation to secure the best video quality.
 
