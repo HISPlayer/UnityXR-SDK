@@ -16,6 +16,7 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public IntPtr externalSurface**: Reference to the external surface object.
     * **public List \<string\> url**: List of the URLs for the stream.
     * **public list \<string\> urlMimeTypes**: List of the HISPlayerMimeTypes attached to each URL from the url list.
+    * **public list \<string\> extSubtitleUrl**: List of the URLs for the external subtitle attached to each URL from the url list.
     * **public bool autoPlay**: If true, the players will start playing automatically after set-up.
     * **public bool EnableRendering**: Determines if the stream will be rendered or not. The value can change in every moment for toggling between render or non-render mode. If true, the player will be rendered. It only can change in runtime.
     * **public bool FlipTextureVertically**: Flip the texture of the stream vertically. This applies for Material, RenderTexture and RawImage. This value should be called before **SetUpPlayer**  or **AddStream** functions. Only supported on Android.
@@ -129,9 +130,24 @@ The following public APIs are provided by **HISPlayerManager**:
    * **public string id**: ID of the caption.
    * **public string language**: Language of the caption.
  
+* **public enum HISPlayerCaptionAlignment**:
+   * **LEFT**
+   * **RIGHT**
+   * **CENTER**
+ 
 * **public struct HISPlayerCaptionElement**: The information of the triggered event turns into caption’s format.
    * **public int playerIndex**: The index of the player where the event is triggered.
    * **public string caption**: The next generated caption text.
+   * **public float position**: The horizontal position of the text along the inline (left-right) axis, as a 0.0–1.0 fraction of the display.
+   * **public HISPlayerCaptionAlignment alignment**: The information of how text is aligned within the cue box (left, right, center)
+   * **public float line**: The vertical position of the text cue box, interpreted as either a 0.0–1.0 fraction.
+ 
+* **public struct VideoSourceOptions**: The information of optional parameters for **AddVideoContent** and **ChangeVideoContent** APIs.
+   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public string keyServerURI**: The DRM license key for each URL.
+   * **public string tokenKey**: The key of the token associated with the URL.
+   * **public string tokenValue**: The value of the token associated with the key.
+   * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
 
 ## Functions
 The following functions are provided by **HISPlayerManager**. They are not public so it’s necessary to create a custom script which inherits from **HISPlayerManager**.
@@ -292,6 +308,18 @@ This event occurs whenever a caption's text has been generated.
     <td>caption</td>
     <td>The next generated caption text.</td>
   </tr>
+  <tr>
+    <td>position</td>
+    <td>The horizontal position of the text along the inline (left-right) axis, as a 0.0–1.0 fraction of the display.</td>
+  </tr>
+  <tr>
+    <td>alignment</td>
+    <td>The information of how text is aligned within the cue box (left, right, center).</td>
+  </tr>
+    <tr>
+    <td>line</td>
+    <td>The vertical position of the text cue box, interpreted as either a 0.0–1.0 fraction.</td>
+  </tr>
 </table>
 
 #### protected virtual void EventAutoTransition(HISPlayerEventInfo eventInfo)
@@ -357,6 +385,16 @@ Add new content to a certain player. If the **enableDRM** variable is true, a vi
 #### void AddVideoContent(int playerIndex, string url, string keyServerUri,  string tokenKey = “” (optional), string tokenValue = “” (optional), HISPlayerMimeTypes mimeType = HISPlayerMimeTypes.URL_EXTENSION(optional))
 Add new content to a certain player and its respective key server uri and tokens if needed (tokenKey and tokenValue are optional parameters). The **enableDRM** variable must be true for using this function. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **url** is the link to the new video. The **keyServerUri** is the license key associated with the URL. Please, make sure the string is correct. This function supports local file paths. The **mimeType** parameter is optional and indicates which MIME type will be used for the new url.
 
+#### void AddVideoContent(int playerIndex, string url, VideoSourceOptions options = default)
+Add new content to a certain player with **VideoSourceOptions** which contains optional parameters. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **url** is the link to the new video. The **VideoSourceOptions** contains the following optional parameters:
+   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public string keyServerURI**: The DRM license key for each URL.
+   * **public string tokenKey**: The key of the token associated with the URL.
+   * **public string tokenValue**: The value of the token associated with the key.
+   * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
+
+Usage example: `AddVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})`
+
 #### void ChangeVideoContent(int playerIndex, int urlIndex)
 Change the video’s URL  of a certain player. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **urlIndex** is associated with the index of the element in the list of URLs.
 
@@ -368,6 +406,16 @@ Change the video’s URL of a certain player given a new URL. The next playback 
 
 #### void ChangeVideoContent(int playerIndex, string url, string keyServerUri, string tokenKey = “” (optional), string tokenValue= “” (optional), HISPlayerMimeTypes, mimeType = HISPlayerMimeTypes.URL_EXTENSION(optional))
 Change the video’s URL of a certain player given a new URL with DRM protection (tokenKey and tokenValue are optional parameters). The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The parameter **url** is the link to the new video. The **keyServerUri** is the license key associated with the URL. Please, make sure the parameters are correctly written. This function supports local file paths. This function will replace the Playlist with the new element. The **mimeType** parameter is optional and indicates which MIME type will be used for the new url.
+
+#### void ChangeVideoContent(int playerIndex, string url, VideoSourceOptions options = default)
+Change the video’s URL of a certain player given a new URL with **VideoSourceOptions** which contains optional parameters. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The parameter **url** is the link to the new video. The **VideoSourceOptions** contains the following optional parameters:
+   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public string keyServerURI**: The DRM license key for each URL.
+   * **public string tokenKey**: The key of the token associated with the URL.
+   * **public string tokenValue**: The value of the token associated with the key.
+   * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
+
+Usage example: `ChangeVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})`
 
 #### void RemoveVideoContent(int playerIndex, int urlIndex)
 Remove content from a certain player. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list.  The **urlIndex** is associated with the index of the element in the list of URLs.
