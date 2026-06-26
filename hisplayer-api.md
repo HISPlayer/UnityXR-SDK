@@ -393,7 +393,10 @@ Add new content to a certain player with **VideoSourceOptions** which contains o
    * **public string tokenValue**: The value of the token associated with the key.
    * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
 
-Usage example: `AddVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})`
+Usage example: 
+```
+AddVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})
+```
 
 #### void ChangeVideoContent(int playerIndex, int urlIndex)
 Change the video’s URL  of a certain player. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **urlIndex** is associated with the index of the element in the list of URLs.
@@ -415,7 +418,10 @@ Change the video’s URL of a certain player given a new URL with **VideoSourceO
    * **public string tokenValue**: The value of the token associated with the key.
    * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
 
-Usage example: `ChangeVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})`
+Usage example: 
+```
+ChangeVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})
+```
 
 #### void RemoveVideoContent(int playerIndex, int urlIndex)
 Remove content from a certain player. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list.  The **urlIndex** is associated with the index of the element in the list of URLs.
