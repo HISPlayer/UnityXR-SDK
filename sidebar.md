@@ -2,7 +2,7 @@
 - [Quickstart Guide](/setup-guide.md)
 - [HISPlayer API](/hisplayer-api.md)
 - [DRM](/drm.md)
-- [Material / RawImage / RenderTexture Rendering](/rendermodes.md)
+- [Render Modes](/rendermodes.md)
 - [Playing Local Files](/local-files.md)
 - [Stereoscopic Video](/stereoscopic.md)
 - [Audio Data Retrieval and Unity Audio Connection](/audio-retrieval.md)
