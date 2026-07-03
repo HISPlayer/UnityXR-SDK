@@ -84,6 +84,16 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
 
 ## 1.4 Configure OpenXR
 
+**Application Entry Point Setup**:
+1. Go to the top menu bar and click **Edit > Project Settings**.
+2. In the left-hand list of the Project Settings window, scroll down and select **Player**.
+3. In the main panel, click on the **Android Tab** and open **Other Settings**.
+4. In the Android Application Configuration section, make sure Application Entry Point has GameActivity checked and Activity unchecked.
+
+<p align="center">
+    <img src="image-2.png" width="700">
+</p>
+
 **XR Plugin Management Setup**:
 1. Go to the top menu bar and click **Edit > Project Settings**.
 2. In the left-hand list of the Project Settings window, scroll down and select **XR Plug-in Management**.
@@ -125,7 +135,7 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
 
 ## 2.1 Import HISPlayer OpenXR Sample
 
-Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_1.0.0.unitypackage) (no need to download it if you have received it in the email). 
+Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_1.0.1.unitypackage) (no need to download it if you have received it in the email). 
 
 Before using the sample, please make sure you have followed the above steps to set-up your Unity project for  and HISPlayer SDK. To use the sample, please follow these steps :
   - Configure OpenXR
@@ -151,9 +161,17 @@ For detailed setup instructions for each render mode, please refer to [**RenderM
 
 ### Scene-Specific Notes
 
-#### HEVC_8K Scene
+#### SampleList Scene
+
+Select one of the sample scenes described below.
+
+#### HEVC_8K_CompositionLayer Scene
 
 This scene demonstrates high-resolution video playback using **ExternalSurface**  render mode.
+
+#### HEVC_8K_RenderTexture Scene
+
+This scene demonstrates high-resolution video playback using **RenderTexture**  render mode.
 
 #### 360° Scene
 

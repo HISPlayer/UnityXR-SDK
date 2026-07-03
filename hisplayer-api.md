@@ -557,6 +557,29 @@ Set the external surface of a certain player to be used. This API will change th
 #### void ReleaseExternalSurface(int playerIndex)
 Release the external surface from a certain player. This API is optional, only call it before destroying the surface during runtime. Please call this API after **SetUpPlayer**.
 
+#### void SetExternalSurfaceSize(GameObject renderScreen, int width, int height)
+Set the size of external surface. **renderScreen** is a GameObject which will be rendererd video output and should include **Composition Layer** and **Surface Textures** components.<br>
+_(This API is only useful when renderMode is selected as **External Surface**)_<br>
+
+The resolution of the **Source Textures** must match the original video resolution. Otherwise, the output video frames will be cropped or display garbage data. Therefore, the width (W) and height (H) must be updated whenever the original video resolution changes. Please override the `void EventVideoSizeChange(HISPlayerEventInfo eventInfo)` function and set the new resolution values within it with this API.
+```C#
+protected override void EventVideoSizeChange(HISPlayerEventInfo eventInfo)
+{
+    if (!isPlaybackReady)
+    {
+        videoTracks = GetTracks(streamIndex);
+    }
+
+    if (videoTracks != null)
+    {
+        int width = (int)eventInfo.param1;
+        int height = (int)eventInfo.param2;
+
+        SetExternalSurfaceSize(renderScreen, width, height);
+    }
+}
+```
+
 #### void SetStereoscopicRendering(int playerIndex, HISPlayerStereoMode stereoMode, ref bool overrideRect, ref Rect srcRectLeft, ref Rect srcRectRight, ref Rect destRectLeft, ref Rect destRectRight)
 Set stereoscopic rendering side by side or top/bottom. Only supported with external surface rendering mode. You may call this API after calling **SetUpPlayer**. The parameters marked with ref keyword can be retrieved from public properties such as OVROverlay for Meta Quest. Usage example: 
 ```
@@ -565,3 +588,4 @@ SetStereoscopicRendering(streamIndex, HISPlayerStereoMode.LeftRight, ref overlay
 
 #### void EnableSurfaceCopy(int playerIndex, RenderTexture targetTexture)
 Enable copy video output frame to RenderTexture. External surface is copied to **targetTexture**. The targetTexture can be applied to any Unity mesh (e.g., a Cube, Quad). Please call this API after **SetUpPlayer**.
+
