@@ -25,9 +25,11 @@ This mode uses **XR Composition Layers** to render video directly onto a composi
 
 4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream. <br>
 The resolution of the Source Textures cannot be zero, so a minimum value must be enforced. If the resolution is zero, acquiring the Android surface will fail.
+_But for Meta Quest device, this process should not be processed._<br>
 The following example shows how to do this:
 
 ```C#
+using UnityEngine.XR;
 using Unity.XR.CompositionLayers;
 using Unity.XR.CompositionLayers.Extensions;
 
@@ -58,6 +60,45 @@ private IEnumerator SetUpExternalSurface()
         
     }
     SetUpPlayer();
+}
+
+public void SetExternalSurfaceSize(GameObject renderScreen, int width, int height)
+{
+    if (IsRunningOnMetaQuest())
+    {
+        return;
+    }
+
+    TexturesExtension sourceTexturesComponent = renderScreen.GetComponent<TexturesExtension>();
+    if (sourceTexturesComponent != null)
+    {
+        sourceTexturesComponent.Resolution = new Vector2(width, height);
+    }
+    else
+    {
+        Debug.LogError("[Error] TexturesExtension component is not attached.");
+    }
+}
+
+private bool IsRunningOnMetaQuest()
+{
+    string deviceName = SystemInfo.deviceName;
+    Debug.Log($"[IsRunningOnMetaQuest] deviceName: {deviceName}");
+    if (deviceName.Contains("Quest"))
+    {
+        return true;
+    }
+
+    string loadedDevice = XRSettings.loadedDeviceName;
+    Debug.Log($"[IsRunningOnMetaQuest] loadedDevice: {loadedDevice}");
+    if (loadedDevice != null && (loadedDevice.Contains("Oculus") || loadedDevice.Contains("meta")))
+    {
+        return true;
+    }
+
+    Debug.Log($"[IsRunningOnMetaQuest] not Meta Quest device.");
+
+    return false;
 }
 ```
 
