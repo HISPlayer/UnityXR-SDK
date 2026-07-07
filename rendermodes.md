@@ -1,20 +1,20 @@
 # Render Modes
 
-HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications is **Composition Layer**, which leverages the OpenXR composition layer for optimal performance and latency. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available for 2D UI or non‑XR scenarios.
+HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications is **External Surface (Composition Layer)**, which leverages the OpenXR composition layer for optimal performance and latency. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available for 2D UI or non‑XR scenarios.
 
-## Composition Layer
+## External Surface (Composition Layer)
 
-This mode uses **XR Composition Layers** to render video directly onto a composition layer, bypassing the main render pipeline for improved performance in XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Meta Quest, Pico, etc.).
+This mode uses **XR Composition Layers** to render video directly onto a composition layer, bypassing the main render pipeline for improved performance in XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Galaxy XR, Meta Quest, Pico, etc.).
 
 ### Setup
 
 1. Create an empty GameObject.
 2. Attach the following components to it:
    - **Composition Layer** (from the XR Composition Layers package)
-   - **Source Textures** (from the XR Composition Layers package)
-
+   - **Source Textures** (from the XR Composition Layers package). *The width (W) and height (H) values of the resolution must not be zero*. 
+    
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/03e6f18d-983b-448a-9f37-ef94ad7a79cd" alt="texto" width="50%" style="height: auto;" />
+  <img src="image-4.png"  alt="texto" width="50%" style="height: auto;">
 </p>
 
 3. In your script (inheriting from `HISPlayerManager`) set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
@@ -23,9 +23,16 @@ This mode uses **XR Composition Layers** to render video directly onto a composi
   <img src="https://github.com/user-attachments/assets/e0c0e141-e3df-4c06-8c1b-241ba5e6615a" alt="texto" width="50%" style="height: auto;" />
 </p>
 
-4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream. The following example shows how to do this:
+4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream. <br>
+The resolution of the Source Textures cannot be zero, so a minimum value must be enforced. If the resolution is zero, acquiring the Android surface will fail.
+_But for Meta Quest device, this process should not be processed._<br>
+The following example shows how to do this:
 
 ```C#
+using UnityEngine.XR;
+using Unity.XR.CompositionLayers;
+using Unity.XR.CompositionLayers.Extensions;
+
 [SerializeField] private GameObject renderScreen;
 private IEnumerator SetUpExternalSurface()
 {
@@ -35,26 +42,92 @@ private IEnumerator SetUpExternalSurface()
     int maxAttempts = 10;
     int attempts = 0;
 
+    SetExternalSurfaceSize(renderScreen, 1, 1);
+
     while (surfacePtr == IntPtr.Zero && attempts < maxAttempts)
     {
         yield return new WaitForEndOfFrame();
-        surfacePtr = OpenXRLayerUtility.GetLayerAndroidSurfaceObject(layer.GetInstanceID());
+
+        int layerId = layer.GetInstanceID();
+        surfacePtr = UnityEngine.XR.OpenXR.CompositionLayers.OpenXRLayerUtility.GetLayerAndroidSurfaceObject(layerId);
+
         attempts++;
     }
 
     if (surfacePtr != IntPtr.Zero)
     {
         multiStreamProperties[streamIndex].externalSurface = surfacePtr;
+        
     }
     SetUpPlayer();
 }
+
+public void SetExternalSurfaceSize(GameObject renderScreen, int width, int height)
+{
+    if (IsRunningOnMetaQuest())
+    {
+        return;
+    }
+
+    TexturesExtension sourceTexturesComponent = renderScreen.GetComponent<TexturesExtension>();
+    if (sourceTexturesComponent != null)
+    {
+        sourceTexturesComponent.Resolution = new Vector2(width, height);
+    }
+    else
+    {
+        Debug.LogError("[Error] TexturesExtension component is not attached.");
+    }
+}
+
+private bool IsRunningOnMetaQuest()
+{
+    string deviceName = SystemInfo.deviceName;
+    Debug.Log($"[IsRunningOnMetaQuest] deviceName: {deviceName}");
+    if (deviceName.Contains("Quest"))
+    {
+        return true;
+    }
+
+    string loadedDevice = XRSettings.loadedDeviceName;
+    Debug.Log($"[IsRunningOnMetaQuest] loadedDevice: {loadedDevice}");
+    if (loadedDevice != null && (loadedDevice.Contains("Oculus") || loadedDevice.Contains("meta")))
+    {
+        return true;
+    }
+
+    Debug.Log($"[IsRunningOnMetaQuest] not Meta Quest device.");
+
+    return false;
+}
 ```
 
-> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer API.
+> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer APIs. Additionally, the resolution of the **Source Textures** must match the original video resolution.
 
 ### Retrieving the Android Surface
 
 The script uses the `OpenXRLayerUtility.GetLayerAndroidSurfaceObject()` method to obtain the native surface pointer from the `CompositionLayer` and assigns it to the `externalSurface` field before calling `SetUpPlayer()`.
+
+### Updating the Resolution of Source Textures
+The resolution of the **Source Textures** must match the original video resolution. Otherwise, the output video frames will be cropped or display garbage data. Therefore, the width (W) and height (H) must be updated whenever the original video resolution changes. Please override the `void EventVideoSizeChange(HISPlayerEventInfo eventInfo)` function and set the new resolution values within it.
+
+```C#
+protected override void EventVideoSizeChange(HISPlayerEventInfo eventInfo)
+{
+    if (!isPlaybackReady)
+    {
+        videoTracks = GetTracks(streamIndex);
+    }
+
+    if (videoTracks != null)
+    {
+        int width = (int)eventInfo.param1;
+        int height = (int)eventInfo.param2;
+
+        SetExternalSurfaceSize(renderScreen, width, height);
+    }
+}
+```
 
 
 ## RenderTexture

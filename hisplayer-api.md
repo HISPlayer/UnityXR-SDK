@@ -565,3 +565,4 @@ SetStereoscopicRendering(streamIndex, HISPlayerStereoMode.LeftRight, ref overlay
 
 #### void EnableSurfaceCopy(int playerIndex, RenderTexture targetTexture)
 Enable copy video output frame to RenderTexture. External surface is copied to **targetTexture**. The targetTexture can be applied to any Unity mesh (e.g., a Cube, Quad). Please call this API after **SetUpPlayer**.
+
