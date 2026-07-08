@@ -11,10 +11,11 @@ This mode uses **XR Composition Layers** to render video directly onto a composi
 1. Create an empty GameObject.
 2. Attach the following components to it:
    - **Composition Layer** (from the XR Composition Layers package)
-   - **Source Textures** (from the XR Composition Layers package). *The width (W) and height (H) values of the resolution must not be zero*. 
+   - **Source Textures** (from the XR Composition Layers package).
+> Important: The width (W) and height (H) values of the resolution must be set following your maximum video resolution. 
     
 <p align="center">
-  <img src="image-4.png"  alt="texto" width="50%" style="height: auto;">
+  <img src="https://github.com/user-attachments/assets/0ecb2b0a-d3f5-4362-a0ba-b823dc4005f9" alt="texto" style="height: auto;">
 </p>
 
 3. In your script (inheriting from `HISPlayerManager`) set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
@@ -23,10 +24,8 @@ This mode uses **XR Composition Layers** to render video directly onto a composi
   <img src="https://github.com/user-attachments/assets/e0c0e141-e3df-4c06-8c1b-241ba5e6615a" alt="texto" width="50%" style="height: auto;" />
 </p>
 
-4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream. <br>
-The resolution of the Source Textures cannot be zero, so a minimum value must be enforced. If the resolution is zero, acquiring the Android surface will fail.
-_But for Meta Quest device, this process should not be processed._<br>
-The following example shows how to do this:
+4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream.
+Please refer to the following example:
 
 ```C#
 using UnityEngine.XR;
@@ -41,8 +40,6 @@ private IEnumerator SetUpExternalSurface()
     IntPtr surfacePtr = IntPtr.Zero;
     int maxAttempts = 10;
     int attempts = 0;
-
-    SetExternalSurfaceSize(renderScreen, 1, 1);
 
     while (surfacePtr == IntPtr.Zero && attempts < maxAttempts)
     {
@@ -61,73 +58,11 @@ private IEnumerator SetUpExternalSurface()
     }
     SetUpPlayer();
 }
-
-public void SetExternalSurfaceSize(GameObject renderScreen, int width, int height)
-{
-    if (IsRunningOnMetaQuest())
-    {
-        return;
-    }
-
-    TexturesExtension sourceTexturesComponent = renderScreen.GetComponent<TexturesExtension>();
-    if (sourceTexturesComponent != null)
-    {
-        sourceTexturesComponent.Resolution = new Vector2(width, height);
-    }
-    else
-    {
-        Debug.LogError("[Error] TexturesExtension component is not attached.");
-    }
-}
-
-private bool IsRunningOnMetaQuest()
-{
-    string deviceName = SystemInfo.deviceName;
-    Debug.Log($"[IsRunningOnMetaQuest] deviceName: {deviceName}");
-    if (deviceName.Contains("Quest"))
-    {
-        return true;
-    }
-
-    string loadedDevice = XRSettings.loadedDeviceName;
-    Debug.Log($"[IsRunningOnMetaQuest] loadedDevice: {loadedDevice}");
-    if (loadedDevice != null && (loadedDevice.Contains("Oculus") || loadedDevice.Contains("meta")))
-    {
-        return true;
-    }
-
-    Debug.Log($"[IsRunningOnMetaQuest] not Meta Quest device.");
-
-    return false;
-}
 ```
 
-> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer APIs. Additionally, the resolution of the **Source Textures** must match the original video resolution.
-
-### Retrieving the Android Surface
+> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer APIs.
 
 The script uses the `OpenXRLayerUtility.GetLayerAndroidSurfaceObject()` method to obtain the native surface pointer from the `CompositionLayer` and assigns it to the `externalSurface` field before calling `SetUpPlayer()`.
-
-### Updating the Resolution of Source Textures
-The resolution of the **Source Textures** must match the original video resolution. Otherwise, the output video frames will be cropped or display garbage data. Therefore, the width (W) and height (H) must be updated whenever the original video resolution changes. Please override the `void EventVideoSizeChange(HISPlayerEventInfo eventInfo)` function and set the new resolution values within it.
-
-```C#
-protected override void EventVideoSizeChange(HISPlayerEventInfo eventInfo)
-{
-    if (!isPlaybackReady)
-    {
-        videoTracks = GetTracks(streamIndex);
-    }
-
-    if (videoTracks != null)
-    {
-        int width = (int)eventInfo.param1;
-        int height = (int)eventInfo.param2;
-
-        SetExternalSurfaceSize(renderScreen, width, height);
-    }
-}
-```
 
 
 ## RenderTexture
