@@ -1,5 +1,10 @@
 # HISPlayer Unity XR SDK Release Notes
 
+### Version 5.8.2
+##### July 27, 2026
+- [**Improvement**] Optimized Ambisonics support with HLS/DASH streaming.
+- [**Improvement**] Updated Android mainTemplate.gradle for PICO VR device.
+
 ### Version 5.8.1
 ##### July 2, 2026
 - [**Improvement**] Improved high resolution selection when using DRM L3 with RawImage/Material/RenderTexture.
