@@ -135,13 +135,13 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
 
 ## 2.1 Import HISPlayer OpenXR Sample
 
-Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_1.0.4.unitypackage) (no need to download it if you have received it in the email). 
+Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_v2.0.0.unitypackage) (no need to download it if you have received it in the email). 
 
 Before using the sample, please make sure you have followed the above steps to set-up your Unity project for  and HISPlayer SDK. To use the sample, please follow these steps :
   - Configure OpenXR
   - Import HISPlayer SDK
   - Import HISPlayer OpenXR Sample
-  - Open Assets/OpenXRSample/Scenes/HEVC_8K.unity
+  - Open Assets/OpenXRSample/Scenes/HEVC_8K_CompositionLayer.unity
   - Import TextMeshPro. Go to Unity Window > TextMeshPro > Import TMP Essential Resources
   - If you received a license key from HISPlayer, input the license key through the Inspector Unity window: **StreamController GameObject > HISPlayerSample component > License Key**
   - Open File > Build Settings > Add Open Scenes
@@ -173,6 +173,10 @@ This scene demonstrates high-resolution video playback using **ExternalSurface**
 
 This scene demonstrates high-resolution video playback using **RenderTexture**  render mode.
 
+#### DRM Scene
+
+This scene demonstrates DRM video playback using **RenderTexture**  render mode.
+
 #### 360° Scene
 
 This scene demonstrates 360° video playback using **RenderTexture** render mode. The `RenderScreen` GameObject uses a **Sphere** as its Mesh Filter and only has a **Mesh Renderer**. This is the recommended configuration for 360° video.
@@ -201,6 +205,9 @@ It is necessary to call SetUpPlayer() before calling other APIs. This function i
 
 ### Stereoscopic Video Playback
 Refer to [**Stereoscopic Video**](./stereoscopic.md).
+
+### Download Video for Offline Playback
+Refer to [**Download Video Content**](./download_content.md).
 
 ## More Information, Features and APIs
 For more information about the supported features and APIs, please refer to the following [**HISPlayer API**](/hisplayer-api.md).

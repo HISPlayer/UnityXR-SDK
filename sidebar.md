@@ -8,6 +8,7 @@
 - [Audio Data Retrieval and Unity Audio Connection](/audio-retrieval.md)
 - [Ambisonics Audio](/ambisonic.md)
 - [Controlling ABR](/controlling-abr.md)
+- [Download Video Content](/download_content.md)
 - [Obtaining Logs](/obtaining-logs.md)
 - [Update the SDK](/update-the-sdk.md)
 - [Releases](/releases.md)

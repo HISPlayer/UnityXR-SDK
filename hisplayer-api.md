@@ -566,3 +566,50 @@ SetStereoscopicRendering(streamIndex, HISPlayerStereoMode.LeftRight, ref overlay
 #### void EnableSurfaceCopy(int playerIndex, RenderTexture targetTexture)
 Enable copy video output frame to RenderTexture. External surface is copied to **targetTexture**. The targetTexture can be applied to any Unity mesh (e.g., a Cube, Quad). Please call this API after **SetUpPlayer**.
 
+<br><br><br>
+
+# HISPlayerDownloadManager API
+
+## Overview
+**HISPlayerDownloadManager** is a `MonoBehaviour` (defined as a `partial class`) that manages the offline-download lifecycle of streams handled by the HISPlayer SDK. It lets an application download adaptive streams (HLS/DASH), DRM-protected adaptive streams with a persistable offline licence, and progressive files (e.g. MP4), and then query, remove, or synchronize those downloads against what is actually on disk.
+
+## Public API
+The following field is exposed by **HISPlayerDownloadManager**:
+
+* **public string licenseKey**: Customer's license key used to set up the downloader.
+
+## Functions
+The following functions are provided by **HISPlayerDownloadManager**. As with **HISPlayerManager**, most of them are not public, so a custom script inheriting from **HISPlayerDownloadManager** is necessary to call them; to trigger them from the Unity scene (e.g. with UI buttons) a public wrapper function must be added in that inherited script.
+
+### Non-virtual functions
+These functions can't be overridden and can only be used inside the inherited script. If they need to be triggered from the Unity scene, for example with buttons, a public function connecting the button to the API must be created.
+
+#### void SetUpDownloader()
+Initializes the video stream downloader internally. It is necessary to call this function before using any other download function. 
+
+#### string[] GetCompletedDownloadIds()
+Returns the identifiers (URLs) of the downloads that have completed. Returns `null` if the downloader has not been created.
+
+#### void DownloadAdaptiveStream(string url, string mimeType = "", string audioLanguages = "ALL", string subtitleLanguages = "ALL", int maxWidth = 0, int maxHeight = 0)
+Downloads an adaptive stream (HLS/DASH) for offline playback. The **url** doubles as the download identifier used by the other download functions (**GetDownloadState**, **GetDownloadPercent**, **RemoveDownload**, etc.), so it must be passed consistently across calls. The **mimeType** parameter is optional; when left empty, the MIME type is inferred from the URL. The **audioLanguages** and **subtitleLanguages** parameters accept a comma-separated list of language tags, or the literal string `"ALL"` to download every available language track. The **maxWidth** and **maxHeight** parameters cap the resolution of the downloaded video rendition; a value of 0 or less selects the highest available rendition.
+
+#### void DownloadAdaptiveStreamWithDRM(string url, string keyServerURI, string tokenKey = "", string tokenValue = "", bool useDRML1 = false, string mimeType = "", string audioLanguages = "ALL", string subtitleLanguages = "ALL", int maxWidth = 0, int maxHeight = 0)
+Downloads a DRM-protected adaptive stream together with a persistable offline licence, so that subsequent offline playback does not require a licence server. The **url** doubles as the download identifier, as in **DownloadAdaptiveStream**. The **keyServerURI** is the DRM license server URI associated with the URL, and **tokenKey**/**tokenValue** are the optional token credentials for that server. The **useDRML1** parameter selects the Widevine security level to request for the offline licence: `true` for L1, `false` to force L3; this must match the security level used during online playback of the same content. The **mimeType**, **audioLanguages**, **subtitleLanguages**, **maxWidth**, and **maxHeight** parameters behave the same as in **DownloadAdaptiveStream**.
+
+#### void DownloadProgressive(string url)
+Downloads a progressive file (for example, an MP4) for offline playback. The **url** doubles as the download identifier used by the other download functions.
+
+#### void RemoveDownload(string url)
+Deletes a single download identified by **url**. If the download has an associated offline DRM licence, that licence is released before the download is removed.
+
+#### void ClearAllDownloads()
+Deletes every existing download and resets the download database.
+
+#### string[] SyncDownloads()
+Reconciles the download database against the files actually present on disk, pruning any download records whose underlying files are missing. Returns the identifiers of the downloads that were pruned as a result, or `null` if the downloader has not been created.
+
+#### HISPlayerDownloadState GetDownloadState(string url)
+Returns the current state of the download identified by **url**, as a value of the **HISPlayerDownloadState** enum. Returns **HISPlayerDownloadState.NOT_FOUND** if the downloader has not been created or if there is no download record for the given URL. The full set of possible states is defined by the **HISPlayerDownloadState** enum elsewhere in the SDK.
+
+#### float GetDownloadPercent(string url)
+Returns the download progress for **url** as a percentage in the range **[0, 100]**, or **-1** if the progress is unknown (for example, if the downloader has not been created).
