@@ -8,12 +8,18 @@ The following public APIs are provided by **HISPlayerManager**:
 * **public List <StreamProperties> multiStreamProperties**: List of properties for multi stream. Please, don't modify this list directly, use the **AddStream** or **RemoveStream** functions instead.
   
 * **public class StreamProperties**:
-    * **public StreamProperties(bool isLoopPlaybackEnabled = true, bool isAutoTransitionEnabled = false, bool isUnityAudioEnabled = false)**: Constructor of the class. The received parameters will set the value of **LoopPlayback**, **AutoTransition** and **UnityAudio** properties respectively. 
+    * **public StreamProperties(bool isLoopPlaybackEnabled = true, bool isAutoTransitionEnabled = false, bool isUnityAudioEnabled = false, HISPlayerAmbisonicAudio ambisonicAudio = HISPlayerAmbisonicAudio.NONE)**: Constructor of the class. The received parameters will set the value of **LoopPlayback**, **AutoTransition**, **UnityAudio** and **AmbisonicAudio** properties respectively. 
     * **public HISPlayerRenderMode renderMode**: Type of texture for rendering. **HISPlayerRenderMode.NONE** by default.
     * **public Material material**: Reference to the Unity Material.
     * **public RawImage rawImage**: Reference to the Unity Raw Image.
     * **public RenderTexture renderTexture**: Reference to the Unity Render Texture.
     * **public IntPtr externalSurface**: Reference to the external surface object.
+    * **public Transform xrLayerTransform**: Reference to the external surface object. Transform that places and sizes this stream's OpenXR video layer — normally the quad you would otherwise have put a renderer on. Its scale is the quad's size in metres and its active state shows or hides the layer; no component has to be added to it. Set this and the SDK owns the whole external-surface path: it creates the swapchain, works out on its own whether the content must be protected for Widevine DRM L1, and wires the resulting Android Surface to the player. Leave empty to supply externalSurface yourself. (Platforms: Android, OpenXR)
+    * **public int xrLayerOrder**: Reference to the external surface object. Composition order of the XR video layer, relative to the whole Unity scene rather than to individual objects: 1 or higher composites the video over everything the camera renders — including world-space Canvases, whose Order in Layer has no effect here — while -1 or lower puts it behind, so a Canvas shows on top of the video. Going behind needs the camera cleared to a solid colour with alpha 0, which the SDK does for you; the skybox cannot be drawn while a video layer is behind the scene. Never 0: that is the order of Unity's own Default Scene Layer, and setting it here would silently overwrite one with the other. Must be unique across streams too, and a stereo layer takes two orders — this one and the next. (Platforms: Android, OpenXR)
+    * **public bool xrLayerMatchVideoAspect**: Reference to the external surface object. Shrink the XR video layer's quad to the video's aspect ratio, so a 21:9 film is not stretched to fill a 16:9 quad. The quad never grows past the Transform's scale. Turn this off to always fill it. (Platforms: Android, OpenXR)
+    * **public HISPlayerXRLayerProjection xrLayerProjection**: Reference to the external surface object. How the XR video layer projects the picture. Quad is a flat screen placed by the Transform above. Equirect360 and Equirect180 wrap it around the viewer for 360/180 footage, where only the Transform's rotation matters. (Platforms: Android, OpenXR)
+    * **public HISPlayerStereoMode xrLayerStereoMode**: Reference to the external surface object. Frame packing of stereoscopic footage: the left and right eye images live in one video frame, side by side or one above the other, and the layer shows each eye its own half. None for ordinary flat footage. A stereo layer occupies two composition orders — this one and the next one up. (Platforms: Android, OpenXR)
+    * **public float xrLayerRadius**: Reference to the external surface object. Radius in metres of the equirect sphere. 0 makes it infinite, which is what 360 video normally wants — the viewer then sits at its centre no matter where they walk. Ignored by the Quad projection. (Platforms: Android, OpenXR)    
     * **public List \<string\> url**: List of the URLs for the stream.
     * **public list \<string\> urlMimeTypes**: List of the HISPlayerMimeTypes attached to each URL from the url list.
     * **public list \<string\> extSubtitleUrl**: List of the URLs for the external subtitle attached to each URL from the url list.
@@ -25,7 +31,7 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public bool UnityAudio (Read-only)**: Retrieves the audio data that can be connected to Unity AudioSource through OnAudioFilterRead() instead of direct device speaker output. Calling SetVolume API to control the audio volume will not work, please control the corresponding Unity Audio Source volume instead. It's false by default. To modify this value, please use the Editor or the constructor **StreamProperties(loopPlayback, autoTransition, unityAudio)**.
     * **public HISPlayerAmbisonicAudio AmbisonicAudio (Read-only)**: Ambisonics audio supporting ambiX format from first order to 3rd order, and TBE format. Enabling Ambisonic will disable Unity Audio. It's set to None or disabled by default. To modify this value, please use the Editor.
     * **public List \<string\> keyServerURI**: List of the DRM license key for each URL.
-    * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.
+    * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.   
 
 * **public struct DRM_Token**: Information for the DRM token:
     * **public string tokenKey**: Key of the token associated with the URL.
@@ -37,6 +43,11 @@ The following public APIs are provided by **HISPlayerManager**:
     * **RawImage**
     * **NONE**
     * **ExternalSurface**
+
+* **public enum HISPlayerXRLayerProjection**: Type of layer projection for external surface rendering:
+    * **Quad**
+    * **Equirect360**
+    * **Equirect180**
 
 * **public enum HISPlayerStereoMode**: Type of stereoscopic mode for external surface rendering:
     * **None**

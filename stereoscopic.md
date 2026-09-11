@@ -2,6 +2,13 @@
 
 HISPlayer SDK supports stereoscopic Side-By-Side (Left/Right) and Top/Bottom video rendering. **MV-HEVC** video codec is also supported with maximum resolution 1080p for smooth playback. 
 
+## External Surface Render Mode
+Set the **Xr Layer Stereo Mode** option to **None**, **Left Right**, or **Top Bottom**, depending on your stereoscopic video format, in the HISPlayer multistream properties.
+
+<p align="center">
+  <img src="image-7.png" width="400" />
+</p>
+
 ## Material / RenderTexture / RawImage Render Mode
 Use **Material** or **RenderTexture** Render Mode in HISPlayer multistream properties, after creating your RenderTexture and Material, please attach **HISPlayerStereoscopicShader** shader to your Material.
 

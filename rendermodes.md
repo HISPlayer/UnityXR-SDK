@@ -2,67 +2,34 @@
 
 HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications is **External Surface (Composition Layer)**, which leverages the OpenXR composition layer for optimal performance and latency. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available for 2D UI or non‑XR scenarios.
 
-## External Surface (Composition Layer)
+## External Surface
 
-This mode uses **XR Composition Layers** to render video directly onto a composition layer, bypassing the main render pipeline for improved performance in XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Galaxy XR, Meta Quest, Pico, etc.).
+This mode uses **XR Video Layers**, which are created and managed inside the HISPlayer SDK to render video directly onto an Android Surface, bypassing the main render pipeline for improved performance in open XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Galaxy XR, Meta Quest, Pico, etc.).
 
 ### Setup
 
 1. Create an empty GameObject.
-2. Attach the following components to it:
-   - **Composition Layer** (from the XR Composition Layers package)
-   - **Source Textures** (from the XR Composition Layers package).
-> Important: The width (W) and height (H) values of the resolution must be set following your maximum video resolution. 
+<p align="center">
+  <img src="image-3.png" width="400" />
+</p>
+
+> Important: There is no need to add any additional components. The HISPlayer SDK will automatically add the XR Video Layer component internally.
     
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/0ecb2b0a-d3f5-4362-a0ba-b823dc4005f9" alt="texto" style="height: auto;">
-</p>
-
-3. In your script (inheriting from `HISPlayerManager`) set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
+2. In your script (inheriting from `HISPlayerManager`), set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e0c0e141-e3df-4c06-8c1b-241ba5e6615a" alt="texto" width="50%" style="height: auto;" />
+  <img src="image-6.png" alt="External Surface render mode setting" width="450" style="height: auto;" />
 </p>
 
-4. Implement a coroutine to retrieve the native Android surface from the `CompositionLayer` and assign it to the `externalSurface` property of your stream.
-Please refer to the following example:
+3. Set the properties related to External Surface:
+  * **Xr Layer Transform**: Use this property to set the position and size of the video. Assign the GameObject on which the video will be displayed (RenderScreen). This is a mandatory property.
+  * **Xr Layer Order**: Composition order, default is 1. A negative value puts the video below the scene. Do not set it to 0. <u>*If multiple streamProperties are used, this value should not be the same for each stream. If **Xr Layer Stereo Mode** is not **None**, each stream uses two layers (left and right eye), so an N + 1 layer order value is used internally — so be careful when setting this value across multiple streamProperties.*</u>
+  * **Xr Layer Projection**: The shape type used to display the video. [Quad, Equirect360 or Equirect180]
+  * **Xr Layer Stereo Mode**: The stereo mode. [None, LeftRight or TopBottom]
+  * **Xr Layer Match Video Aspect**: Keeps the original source video's aspect ratio within the **Xr Layer Transform** region. **Quad only**
+  * **Xr Layer Radius**: Radius of the Equirect screen. 0 means an infinite sphere. **Equirect 360/180 only**
 
-```C#
-using UnityEngine.XR;
-using Unity.XR.CompositionLayers;
-using Unity.XR.CompositionLayers.Extensions;
-
-[SerializeField] private GameObject renderScreen;
-private IEnumerator SetUpExternalSurface()
-{
-    CompositionLayer layer = renderScreen.GetComponent<CompositionLayer>();
-
-    IntPtr surfacePtr = IntPtr.Zero;
-    int maxAttempts = 10;
-    int attempts = 0;
-
-    while (surfacePtr == IntPtr.Zero && attempts < maxAttempts)
-    {
-        yield return new WaitForEndOfFrame();
-
-        int layerId = layer.GetInstanceID();
-        surfacePtr = UnityEngine.XR.OpenXR.CompositionLayers.OpenXRLayerUtility.GetLayerAndroidSurfaceObject(layerId);
-
-        attempts++;
-    }
-
-    if (surfacePtr != IntPtr.Zero)
-    {
-        multiStreamProperties[streamIndex].externalSurface = surfacePtr;
-        
-    }
-    SetUpPlayer();
-}
-```
-
-> Important: SetUpPlayer() must be called after the surface is assigned and before using any other HISPlayer APIs.
-
-The script uses the `OpenXRLayerUtility.GetLayerAndroidSurfaceObject()` method to obtain the native surface pointer from the `CompositionLayer` and assigns it to the `externalSurface` field before calling `SetUpPlayer()`.
+> Important: Do not set the `StreamProperties.externalSurface` property. This property is set automatically by the SDK.
 
 
 ## RenderTexture
