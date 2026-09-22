@@ -2,8 +2,8 @@
 
 ### Version 6.0.0
 ##### September XX, 2026
-- [**Added**] Support DRM L1 with External Surface. (OpenXR, AndroidXR only)
-- [**Improvement**] Display watermark over External Surface. (OpenXR, AndroidXR only)
+- [**Added**] Support DRM L1 for OpenXR and AndroidXR usage using `XRLayerProperties` with External Surface render mode.
+- [**Improvement**] Optimized HISPlayer Event synchronization routine.
 
 ### Version 5.8.2
 ##### July 27, 2026
