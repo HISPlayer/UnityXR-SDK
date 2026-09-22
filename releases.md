@@ -5,9 +5,9 @@
 - [**Added**] `XRLayerProperties` to support DRM L1 and composition layer usage improvement for OpenXR and AndroidXR using External Surface render mode.
   - `Transform xrLayerVideoScreen`
   - `int xrLayerOrder`
-  - `bool xrLayerMatchVideoAspect`
   - `HISPlayerXRLayerProjection xrLayerProjection`
   - `HISPlayerStereoMode xrLayerStereoMode`
+  - `bool xrLayerMatchVideoAspect`
   - `float xrLayerRadius` 
 - [**Improvement**] Optimized HISPlayer Event synchronization routine.
 
