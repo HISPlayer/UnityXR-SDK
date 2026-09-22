@@ -23,12 +23,12 @@ This mode uses **XR Video Layers**, which are managed inside the HISPlayer SDK f
 </p>
 
 3. Set the XR Layer properties related to External Surface:
-  * **Xr Layer Transform**: Use this property to set the position and size of the video. Assign the GameObject on which the video will be displayed (RenderScreen). This is a mandatory property.
-  * **Xr Layer Order**: Composition order, default is 1. A negative value puts the video below the scene. Do not set it to 0. <u>*If multiple streamProperties are used, this value should not be the same for each stream. If **Xr Layer Stereo Mode** is not **None**, each stream uses two layers (left and right eye), so an N + 1 layer order value is used internally — so be careful when setting this value across multiple streamProperties.*</u>
-  * **Xr Layer Projection**: The shape type used to display the video. [Quad, Equirect360 or Equirect180]
-  * **Xr Layer Stereo Mode**: The stereo mode. [None, LeftRight or TopBottom]
-  * **Xr Layer Match Video Aspect**: Keeps the original source video's aspect ratio within the **Xr Layer Transform** region. **Quad only**
-  * **Xr Layer Radius**: Radius of the Equirect screen. 0 means an infinite sphere. **Equirect 360/180 only**
+    * **Video Screen**: Attach the Unity Game Object's Transform where video will be rendered.
+    * **Order**: Order of the rendered video relative to the whole Unity scene: 1 (Default) or higher will render the video over everything the camera renders. -1 or lower will render the video behind everything. Never put 0 which is the order of Unity's own Default Scene Layer. Set unique value across multiple streams to avoid multipe video rendering order conflict. Stereo layer takes two orders - this one and the next.
+    * **Projection**: Select the projection type. **Quad** is a flat/rectilinear screen placed by the Video Screen above. **Equirect360** and **Equirect180** wrap it around the viewer for 360/180° video.
+    * **Stereo Mode**: Select stereoscopic mode. **None** for Monoscopic video. **Left Right** or **Top Bottom** for stereoscopic video. A stereo layer occupies two composition orders - the one above and the next one up.
+    * **Match Video Aspect**: Match the render surface quad to the video's aspect ratio. For example a 21:9 film is not stretched to fill a 16:9 quad. The quad never grows past the Video Screen's scale. **Quad only**.
+    * **Radius**: Radius in metres of the equirect sphere. 0 is default for 360 video to make it infinite. **Equirect 360/180 only**.
 
 > Important: Do not set the `StreamProperties.externalSurface` property. This property is set automatically by the SDK.
 
