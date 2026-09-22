@@ -1,27 +1,28 @@
 # Render Modes
 
-HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications is **External Surface (Composition Layer)**, which leverages the OpenXR composition layer for optimal performance and latency. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available for 2D UI or non‑XR scenarios.
+HISPlayer supports multiple rendering modes to suit different use cases and platforms. The recommended mode for XR/VR applications is **External Surface** for optimal performance & latency and DRM L1 support. Other modes like **RenderTexture**, **Material**, and **RawImage** are also available.
 
 ## External Surface
 
-This mode uses **XR Video Layers**, which are created and managed inside the HISPlayer SDK to render video directly onto an Android Surface, bypassing the main render pipeline for improved performance in open XR headsets. It is the preferred choice for immersive VR experiences on Android (e.g., Galaxy XR, Meta Quest, Pico, etc.).
+This mode uses **XR Video Layers**, which are managed inside the HISPlayer SDK for high resolution video rendering performance and DRM L1 support. It is the preferred choice for immersive experiences on Android XR headsets (e.g., Meta Quest, Pico, Galaxy XR, etc).
 
 ### Setup
 
 1. Create an empty GameObject.
 <p align="center">
-  <img src="image-3.png" width="400" />
+  <img width="543" height="257" alt="image" src="https://github.com/user-attachments/assets/d4d4709a-9549-48b9-a928-25477b6f6d5e" />
 </p>
+
 
 > Important: There is no need to add any additional components. The HISPlayer SDK will automatically add the XR Video Layer component internally.
     
 2. In your script (inheriting from `HISPlayerManager`), set the `renderMode` to `HISPlayerRenderMode.ExternalSurface` in the `MultiStreamProperties`.
 
 <p align="center">
-  <img src="image-6.png" alt="External Surface render mode setting" width="450" style="height: auto;" />
+  <img width="544" height="652" alt="image" src="https://github.com/user-attachments/assets/4316d6c2-3b93-40c2-9e5d-cdcbf2383203" />
 </p>
 
-3. Set the properties related to External Surface:
+3. Set the XR Layer properties related to External Surface:
   * **Xr Layer Transform**: Use this property to set the position and size of the video. Assign the GameObject on which the video will be displayed (RenderScreen). This is a mandatory property.
   * **Xr Layer Order**: Composition order, default is 1. A negative value puts the video below the scene. Do not set it to 0. <u>*If multiple streamProperties are used, this value should not be the same for each stream. If **Xr Layer Stereo Mode** is not **None**, each stream uses two layers (left and right eye), so an N + 1 layer order value is used internally — so be careful when setting this value across multiple streamProperties.*</u>
   * **Xr Layer Projection**: The shape type used to display the video. [Quad, Equirect360 or Equirect180]
