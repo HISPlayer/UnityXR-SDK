@@ -2,7 +2,7 @@
 
 ### Version 6.0.0
 ##### September 23, 2026
-- [**Added**] `XRLayerProperties` to support DRM L1 and composition layer usage improvement for OpenXR and AndroidXR using External Surface render mode.
+- [**Added**] `XRLayerProperties` to support DRM L1, stereoscopic, 360° & 180° video, and composition layer usage improvement using External Surface render mode for OpenXR and AndroidXR.
   - `Transform xrLayerVideoScreen`
   - `int xrLayerOrder`
   - `HISPlayerXRLayerProjection xrLayerProjection`
