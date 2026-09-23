@@ -165,7 +165,7 @@ The recommended **RenderMode** is **ExternalSurface** for an improved high resol
 
 Select one of the sample scenes described below.
 
-#### HEVC_8K_CompositionLayer Scene
+#### HEVC_8K_ExternalSurface Scene
 
 This scene demonstrates high-resolution video playback using **ExternalSurface** render mode.
 
