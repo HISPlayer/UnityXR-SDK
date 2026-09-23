@@ -8,12 +8,13 @@ The following public APIs are provided by **HISPlayerManager**:
 * **public List <StreamProperties> multiStreamProperties**: List of properties for multi stream. Please, don't modify this list directly, use the **AddStream** or **RemoveStream** functions instead.
   
 * **public class StreamProperties**:
-    * **public StreamProperties(bool isLoopPlaybackEnabled = true, bool isAutoTransitionEnabled = false, bool isUnityAudioEnabled = false)**: Constructor of the class. The received parameters will set the value of **LoopPlayback**, **AutoTransition** and **UnityAudio** properties respectively. 
+    * **public StreamProperties(bool isLoopPlaybackEnabled = true, bool isAutoTransitionEnabled = false, bool isUnityAudioEnabled = false, HISPlayerAmbisonicAudio ambisonicAudio = HISPlayerAmbisonicAudio.NONE)**: Constructor of the class. The received parameters will set the value of **LoopPlayback**, **AutoTransition**, **UnityAudio** and **AmbisonicAudio** properties respectively. 
     * **public HISPlayerRenderMode renderMode**: Type of texture for rendering. **HISPlayerRenderMode.NONE** by default.
     * **public Material material**: Reference to the Unity Material.
     * **public RawImage rawImage**: Reference to the Unity Raw Image.
     * **public RenderTexture renderTexture**: Reference to the Unity Render Texture.
     * **public IntPtr externalSurface**: Reference to the external surface object.
+    * **public XRLayerProperties xrLayer**: Property for **ExternalSurface** render mode on an XR device when OpenXR composition layer is used to render the video.
     * **public List \<string\> url**: List of the URLs for the stream.
     * **public list \<string\> urlMimeTypes**: List of the HISPlayerMimeTypes attached to each URL from the url list.
     * **public list \<string\> extSubtitleUrl**: List of the URLs for the external subtitle attached to each URL from the url list.
@@ -25,7 +26,7 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public bool UnityAudio (Read-only)**: Retrieves the audio data that can be connected to Unity AudioSource through OnAudioFilterRead() instead of direct device speaker output. Calling SetVolume API to control the audio volume will not work, please control the corresponding Unity Audio Source volume instead. It's false by default. To modify this value, please use the Editor or the constructor **StreamProperties(loopPlayback, autoTransition, unityAudio)**.
     * **public HISPlayerAmbisonicAudio AmbisonicAudio (Read-only)**: Ambisonics audio supporting ambiX format from first order to 3rd order, and TBE format. Enabling Ambisonic will disable Unity Audio. It's set to None or disabled by default. To modify this value, please use the Editor.
     * **public List \<string\> keyServerURI**: List of the DRM license key for each URL.
-    * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.
+    * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.   
 
 * **public struct DRM_Token**: Information for the DRM token:
     * **public string tokenKey**: Key of the token associated with the URL.
@@ -37,6 +38,19 @@ The following public APIs are provided by **HISPlayerManager**:
     * **RawImage**
     * **NONE**
     * **ExternalSurface**
+
+* **public XRLayerProperties**: Property for **ExternalSurface** render mode on an XR device when OpenXR composition layer is used to render the video:
+    * **public Transform xrLayerVideoScreen**: Attach the Unity Game Object's Transform where video will be rendered (Platforms: Android OpenXR).
+    * **public int xrLayerOrder**: Order of the rendered video relative to the whole Unity scene: 1 or higher will render the video over everything the camera renders. -1 or lower will render the video behind everything. Never put 0 which is the order of Unity's own Default Scene Layer. Set unique value across multiple streams to avoid multipe video rendering order conflict. Stereo layer takes two orders - this one and the next. (Platforms: Android OpenXR)
+    * **public HISPlayerXRLayerProjection xrLayerProjection**: Select the projection type. Quad is a flat/rectilinear screen placed by the VideoScreen above. Equirect360 and Equirect180 wrap it around the viewer for 360/180° video. (Platforms: Android OpenXR)
+    * **public HISPlayerStereoMode xrLayerStereoMode**: Select stereoscopic mode. None for Monoscopic video. Left Right or Top Bottom for stereoscopic video. A stereo layer occupies two composition orders - the one above and the next one up. (Platforms: Android OpenXR)
+    * **public bool xrLayerMatchVideoAspect**: Match the render surface quad to the video's aspect ratio. For example a 21:9 film is not stretched to fill a 16:9 quad. The quad never grows past the VideoScreen's scale. For Quad projection only. (Platforms: Android OpenXR)
+    * **public float xrLayerRadius**: Radius in metres of the equirect sphere. 0 is default for 360 video to make it infinite. For Equirect360 and Equirect180 projection only. (Platforms: Android OpenXR)   
+
+* **public enum HISPlayerXRLayerProjection**: Type of layer projection for external surface rendering:
+    * **Quad**: Use this for flat/rectilinear video.
+    * **Equirect360**: Use this for 360° video.
+    * **Equirect180**: Use this for 180° video
 
 * **public enum HISPlayerStereoMode**: Type of stereoscopic mode for external surface rendering:
     * **None**
