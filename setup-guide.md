@@ -141,10 +141,10 @@ Before using the sample, please make sure you have followed the above steps to s
   - Configure OpenXR
   - Import HISPlayer SDK
   - Import HISPlayer OpenXR Sample
-  - Open Assets/OpenXRSample/Scenes/HEVC_8K.unity
   - Import TextMeshPro. Go to Unity Window > TextMeshPro > Import TMP Essential Resources
-  - If you received a license key from HISPlayer, input the license key through the Inspector Unity window: **StreamController GameObject > HISPlayerSample component > License Key**
-  - Open File > Build Settings > Add Open Scenes
+  - Open all Unity scene in Assets/OpenXRSample/Scenes and do the following:
+    - If you received a license key from HISPlayer, input the license key through the Inspector Unity window: **StreamController GameObject > HISPlayerSample component > License Key**
+    - Open File > Build Settings > Add Open Scenes
   - Build and Run
 
 To check how to set up the SDK and API usage, please refer to Assets/OpenXRSample/Scripts/Sample/**HISPlayerSample.cs** and **StreamController** GameObject in the Editor.
