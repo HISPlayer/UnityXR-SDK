@@ -126,11 +126,11 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
 
 3. **OpenXR Feature Groups**:
     - Scroll down to the bottom of the OpenXR settings panel.
-    - Check the box for **Meta Quest Support** or other option depending on your VR headset. 
-    - Check the box for **Composition Layer Support**.
+    - Check the box for **Meta Quest Support** or other option depending on your VR headset (PICO, etc). 
+    - Check the box for **Composition Layer Support**. This will automatically enable **HISPlayer XR Video Layer**.
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/218dbe0e-96ea-4153-a8bf-6fe07e6933b3">
+<img width="701" height="342" alt="image" src="https://github.com/user-attachments/assets/1cf4f2d0-fcd7-4b37-ba6a-e16507b19670" />
 </p>
 
 ## 2.1 Import HISPlayer OpenXR Sample
