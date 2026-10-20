@@ -1,5 +1,16 @@
 # HISPlayer Unity XR SDK Release Notes
 
+### Version 6.0.X
+##### October XX, 2026
+- [**Added**] Support Personalized HRTF Ambisonic. New APIs and properties in`StreamProperties` to support Personalized HRTF Ambisomic.
+  - `LoadHRTF(int playerIndex, string sofaPath)`
+  - `LoadHRTF(int playerIndex, byte[] sofaData)`
+  - `LoadHRTFAsync(int playerIndex, string sofaPath)`
+  - `LoadHRTFAsync(int playerIndex, byte[] sofaData)`
+  - `hrtfSofaBytes`
+  - `hrtfSofaPath` 
+  - `hrtfSofaData`
+
 ### Version 6.0.0
 ##### September 23, 2026
 - [**Added**] `XRLayerProperties` to support DRM L1, stereoscopic, 360° & 180° video, and composition layer usage improvement using External Surface render mode for OpenXR and AndroidXR.
