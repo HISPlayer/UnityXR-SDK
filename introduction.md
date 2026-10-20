@@ -78,3 +78,10 @@ HISPlayer is the most advanced video streaming player for Unity, supporting loca
 ### Supported Application Layer Protocol
   * HTTPS
     * HTTP is not supported
+
+### Third-Party Software Notices
+
+  * The HISPlayer SDK includes the following third-party software in binary form (libhisplayerandroid.so). It is used to read SOFA (AES69) HRTF files.
+
+    * libmysofa 1.3.5 — https://github.com/hoene/libmysofa
+    * Copyright (c) 2016-2017, Symonics GmbH, Christian Hoene All rights reserved.

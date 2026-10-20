@@ -27,6 +27,9 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public HISPlayerAmbisonicAudio AmbisonicAudio (Read-only)**: Ambisonics audio supporting ambiX format from first order to 3rd order, and TBE format. Enabling Ambisonic will disable Unity Audio. It's set to None or disabled by default. To modify this value, please use the Editor.
     * **public List \<string\> keyServerURI**: List of the DRM license key for each URL.
     * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.   
+    * **public TextAsset hrtfSofaBytes**: HRTF for ambiX streams: when a SOFA file (SimpleFreeFieldHRIR) is given, it is loaded when the stream is created. If not load default HRTF.
+    * **public string hrtfSofaPath**: Path of a SOFA file in the device file system (e.g. under Application.persistentDataPath). Files inside the APK (Assets, StreamingAssets) are not plain files: use hrtfSofaBytes instead.
+    * **public byte[] hrtfSofaData**: SOFA file contents set from script before SetUpPlayer() (e.g. downloaded).
 
 * **public struct DRM_Token**: Information for the DRM token:
     * **public string tokenKey**: Key of the token associated with the URL.
@@ -574,3 +577,26 @@ Release the external surface from a certain player. This API is optional, only c
 #### void EnableSurfaceCopy(int playerIndex, RenderTexture targetTexture)
 Enable copy video output frame to RenderTexture. External surface is copied to **targetTexture**. The targetTexture can be applied to any Unity mesh (e.g., a Cube, Quad). Please call this API after **SetUpPlayer**.
 
+#### public bool LoadHRTF(int playerIndex, string sofaPath)
+Loads an HRTF from a SOFA file (SimpleFreeFieldHRIR, e.g. HUTUBS) for the custom HRTF
+Can be called during playback: the new HRTF is cross-faded in.
+The stream must have been created with an HRTF set (custom HRTF) and an ambiX format.<br>
+Loading takes from a few hundred milliseconds to about a second on standalone headsets; prefer
+"LoadHRTFAsync(int, byte[])" during playback.<br>
+Supported platforms: Android<br>
+The **playerIndex** is the index of the player in multistream properties. The **sofaPath** is the path of the SOFA file in the file system (not inside the APK)
+
+#### public bool LoadHRTF(int playerIndex, byte[] sofaData)
+Loads an HRTF from the contents of a SOFA file.<br>
+Supported platforms: Android<br>
+The **playerIndex** is the index of the player in multistream properties. The **sofaData** is the byte data of the SOFA file.
+
+#### public Task<bool> LoadHRTFAsync(int playerIndex, string sofaPath)
+Loads an HRTF from a SOFA file on a worker thread.<br>
+Supported platforms: Android<br>
+The **playerIndex** is the index of the player in multistream properties. The **sofaPath** is the path of the SOFA file in the file system (not inside the APK)
+
+#### public Task<bool> LoadHRTFAsync(int playerIndex, byte[] sofaData)
+Loads an HRTF from the contents of a SOFA file on a worker thread.<br>
+Supported platforms: Android<br>
+The **playerIndex** is the index of the player in multistream properties. The **sofaData** is the byte data of the SOFA file.
