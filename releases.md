@@ -1,5 +1,11 @@
 # HISPlayer Unity XR SDK Release Notes
 
+### Version 6.1.0
+##### November xx, 2026
+- [**Added**] Offline playback support. Content can be downloaded and stored locally through the new HLS/DASH Downloader and played back without network connection.
+- [**Added**] Multiple external subtitle tracks per video.
+- [**Added**] Custom HTTP Authorization Headers support.
+
 ### Version 6.0.0
 ##### September 23, 2026
 - [**Added**] `XRLayerProperties` to support DRM L1, stereoscopic, 360° & 180° video, and composition layer usage improvement using External Surface render mode for OpenXR and AndroidXR.
