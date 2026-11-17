@@ -135,19 +135,19 @@ Alternatively, you may set the Target API level to 34 or higher in the Unity pro
 
 ## 2.1 Import HISPlayer OpenXR Sample
 
-Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_2.0.3.unitypackage) (no need to download it if you have received it in the email). 
+Please, download the sample here: [**OpenXRSample**](https://downloads.hisplayer.com/Unity/XR/HISPlayer_OpenXR_Sample_2.1.0.unitypackage) (no need to download it if you have received it in the email). 
 
 Before using the sample, please make sure you have followed the above steps to set-up your Unity project for  and HISPlayer SDK. To use the sample, please follow these steps :
   - Configure OpenXR
   - Import HISPlayer SDK
   - Import HISPlayer OpenXR Sample
   - Import TextMeshPro. Go to Unity Window > TextMeshPro > Import TMP Essential Resources
-  - Open all Unity scene in Assets/OpenXRSample/Scenes and do the following for each scene:
+  - Open all Unity scene in Assets/HISPlayerOpenXRSample/Scenes and do the following for each scene:
     - If you received a license key from HISPlayer, input the license key through the Inspector Unity window: **StreamController GameObject > HISPlayerSample component > License Key**
     - Open File > Build Settings > Add Open Scenes
   - Build and Run
 
-To check how to set up the SDK and API usage, please refer to Assets/OpenXRSample/Scripts/Sample/**HISPlayerSample.cs** and **StreamController** GameObject in the Editor.
+To check how to set up the SDK and API usage, please refer to Assets/HISPlayerOpenXRSample/Scripts/Sample/**HISPlayerSample.cs** and **StreamController** GameObject in the Editor.
 
 ## Sample Explanation and SDK Usage
 
@@ -177,6 +177,10 @@ This scene demonstrates high-resolution video playback using **RenderTexture** r
 
 This scene demonstrates a Widevine DRM L1 protected video playback using **ExternalSurface** render mode. For more details about DRM, refer to [**DRM**](/drm.md) page.
 
+#### DRM Scene
+
+This scene demonstrates DRM video playback using **RenderTexture**  render mode.
+
 #### 360° Scene
 
 This scene demonstrates 360° video playback using **External Surface** render mode. **XR Layer Projection** option is set to **Equirect 360**.
@@ -194,6 +198,34 @@ This scene demonstrates a Left/Right stereoscopic video playback using **Externa
 </p>
 
 For more details about stereoscopic, refer to [**Stereoscopic**](/stereoscopic.md) page.
+
+#### 180 Stereoscopic
+
+This scene demonstrates a 180° Left/Right stereoscopic video playback using **ExternalSurface** render mode. **XR Layer Projection** option is set to **Equirect 180** and **XR Layer Stereo Mode** option is set to **Left Right**.
+<p align="center">
+    <img width="542" alt="image" src="https://github.com/user-attachments/assets/2f0e4446-764a-4e5d-8ce7-25f41f14a84f" />
+</p>
+
+For more details about stereoscopic, refer to [**Stereoscopic**](/stereoscopic.md) page.
+
+#### Multistreams
+
+This scene demonstrates the playback of two videos at the same time using **ExternalSurface** render mode. Each video is configured as a separate element in **MultiStreamProperties**.
+
+#### MV-HEVC
+
+This scene demonstrates a stereoscopic **MV-HEVC** video playback using **ExternalSurface** render mode. **XR Layer Stereo Mode** option is set to **Left Right**.
+
+For more details about MV-HEVC, refer to [**Stereoscopic**](/stereoscopic.md) page.
+
+#### Spatial Audio Scene
+
+Two helper GameObjects are present in the scene: **FillAudioSourceGroup** and **GetAudioSourceGroup**. Activating or deactivating them switches between the corresponding audio retrieval APIs.
+<p align="center">
+    <img width="300" alt="image" src="https://github.com/user-attachments/assets/5807a4b0-269c-4f92-8db6-abb5a45a11e6" />
+</p>
+
+For more information, please refer to the following [**Audio Retrieval guide**](/audio-retrieval.md).
 
 #### Ambisonic Audio Scene
 
@@ -219,6 +251,9 @@ It is necessary to call SetUpPlayer() before calling other APIs. This function i
 
 ### Stereoscopic Video Playback
 Refer to [**Stereoscopic Video**](./stereoscopic.md).
+
+### Download Video for Offline Playback
+Refer to [**Download Video Content**](./download_content.md).
 
 ## More Information, Features and APIs
 For more information about the supported features and APIs, please refer to the following [**HISPlayer API**](/hisplayer-api.md).
