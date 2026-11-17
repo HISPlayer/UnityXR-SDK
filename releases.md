@@ -1,5 +1,16 @@
 # HISPlayer Unity XR SDK Release Notes
 
+### Version 6.0.0
+##### September 23, 2026
+- [**Added**] `XRLayerProperties` to support DRM L1, stereoscopic, 360° & 180° video, and composition layer usage improvement using External Surface render mode for OpenXR and AndroidXR.
+  - `Transform xrLayerVideoScreen`
+  - `int xrLayerOrder`
+  - `HISPlayerXRLayerProjection xrLayerProjection`
+  - `HISPlayerStereoMode xrLayerStereoMode`
+  - `bool xrLayerMatchVideoAspect`
+  - `float xrLayerRadius` 
+- [**Improvement**] Optimized HISPlayer Event synchronization routine.
+
 ### Version 5.8.2
 ##### July 27, 2026
 - [**Improvement**] Optimized Ambisonics support with HLS/DASH streaming.

@@ -34,5 +34,10 @@ Belos is an example of the usage of the DRM fields in the editor with different 
 </p>
 
 ## Widevine L1
-Widevine L1 is supported for Meta Quest device only. If you need to play Widevine L1 content, please refer to [HISPlayer Meta Quest SDK Sample](https://hisplayer.github.io/UnityMetaQuest-SDK/#/setup-guide?id=_21-import-hisplayer-meta-quest-sdk-sample)
+Widevine L1 is supported only with **External Surface** render mode.
 
+<p align="center">
+<img width="538" height="624" alt="image" src="https://github.com/user-attachments/assets/a4b3b578-9bc6-44b7-a1ea-8b8c513fab53" />
+</p>
+
+If other render modes are used, the DRM level is automatically downgraded to L3 internally.
