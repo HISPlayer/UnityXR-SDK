@@ -372,6 +372,19 @@ Initialize the player video stream system internally. It is necessary to use thi
 #### void Release()
 Free all resources internally. In the SDK v4.3.0 and below, it's necessary to call this function before changing between Unity scenes or before quitting the application. In the SDK v4.4.0 and above, the release is called automatically when changing scenes or quitting the application and it's not required to call this function. 
 
+#### void ReleaseAsync(Action onReleased)
+Free all resources internally, like **Release**, and call **onReleased** when the release is done. Use this function instead of **Release** right before changing the Unity scene, and load the next scene inside **onReleased**.
+
+When the **External Surface** render mode is used, the video is shown with **XR Video Layers**, and the scene usually has other XR layers as well, such as the UI panel and the controller pointer. In that case this function first hides those layers and releases a few frames later. On some XR devices, such as Android XR, changing the scene while these layers are still shown can crash the application. If the scene has no such layers, the release happens immediately.
+   * **onReleased**: Called once the release is done. It can be null.
+
+Please, don't continue playing in the same scene after calling this function. The XR layers of the scene, such as the UI panel and the controller pointer, stay hidden. To release and play again in the same scene, use **Release** instead.
+
+Usage example: 
+```
+ReleaseAsync(() => SceneManager.LoadScene("NextScene"));
+```
+
 #### void Play(int playerIndex)
 Play a certain stream giving a **playerIndex**. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list.
 
