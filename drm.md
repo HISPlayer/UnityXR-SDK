@@ -41,3 +41,5 @@ Widevine L1 is supported only with **External Surface** render mode.
 </p>
 
 If other render modes are used, the DRM level is automatically downgraded to L3 internally.
+
+Downloaded content is an exception: offline playback uses the security level selected when the content was downloaded, and it is not downgraded. Content downloaded with L1 can therefore be played offline only in **External Surface** render mode, while content downloaded with L3 can be played offline in every render mode. For more details, refer to [**Download Video Content**](/download_content.md).

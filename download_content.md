@@ -29,7 +29,7 @@ It is necessary to call `SetUpDownloader()` before calling any other APIs. This 
 
 ## Download Video Content
 
-There are two download APIs. The first one is `DownloadAdaptiveStream()`, which is used to download adaptive streaming content such as HLS and DASH. The second API is `DownloadProgressive()`.
+There are three download APIs. `DownloadAdaptiveStream()` downloads adaptive streaming content such as HLS and DASH, and `DownloadAdaptiveStreamWithDRM()` downloads Widevine DRM protected adaptive streaming content. `DownloadProgressive()` downloads progressive files.
 
 ### Adaptive Video Content (HLS, DASH) Download
 Adaptive content downloading supports both non-DRM and Widevine DRM content.
@@ -37,6 +37,14 @@ Adaptive streaming content is composed of several different bitrate tracks. The 
 
 #### Select a Bitrate Track
 With the `maxWidth` and `maxHeight` parameters, you can specify the track to download. The SDK will internally select the highest bitrate track that meets your `maxWidth` and `maxHeight` values.
+
+#### Download Widevine DRM Content
+Use `DownloadAdaptiveStreamWithDRM()` to download Widevine DRM content. Together with the content, the SDK acquires an offline licence from the license server, so the content can be played later without a network connection.
+The `useDRML1` parameter selects the Widevine security level of the offline licence: `true` for L1, `false` for L3. Choose the level according to the render mode that will play the content offline:
+* **L1**: the content can be played offline only in **External Surface** render mode.
+* **L3**: the content can be played offline in every render mode, including **External Surface**.
+
+A content URL can hold only one download. If you download the same URL again, for example with another security level, the new download replaces the existing one.
 
 #### Select Audio and Subtitle Tracks
 Content can include multiple audio and subtitle tracks. 
@@ -55,3 +63,5 @@ We provide several APIs to manage downloaded content. Please refer to the [**HIS
 ## Offline Playback
 
 When playing content, the SDK internally checks whether the content has already been downloaded. If the content is available locally, it will play in offline mode. For partially downloaded content, the player will utilize the locally downloaded segments and seamlessly switch to streaming for any missing segments.
+
+Downloaded Widevine DRM content is played with the offline licence stored at download time, at the security level selected for that download (L1 or L3). The DRM settings used for online playback do not change this level.
