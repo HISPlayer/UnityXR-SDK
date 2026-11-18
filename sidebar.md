@@ -3,6 +3,7 @@
 - [HISPlayer API](/hisplayer-api.md)
 - [Render Modes](/rendermodes.md)
 - [DRM](/drm.md)
+- [Custom HTTP Headers](/custom-http-headers.md)
 - [Playing Local Files](/local-files.md)
 - [Stereoscopic Video](/stereoscopic.md)
 - [Audio Data Retrieval and Unity Audio Connection](/audio-retrieval.md)

@@ -17,7 +17,7 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public XRLayerProperties xrLayer**: Property for **ExternalSurface** render mode on an XR device when OpenXR composition layer is used to render the video.
     * **public List \<string\> url**: List of the URLs for the stream.
     * **public list \<string\> urlMimeTypes**: List of the HISPlayerMimeTypes attached to each URL from the url list.
-    * **public list \<string\> extSubtitleUrl**: List of the URLs for the external subtitle attached to each URL from the url list.
+    * **public List \<ExternalSubtitleList\> ExternalSubtitles**: List of the external subtitles attached to each URL from the url list, one **ExternalSubtitleList** per URL. Each subtitle is added as a caption track with its language: it appears in **GetCaptionTrackList** and can be selected with **SelectCaptionTrack**. Only supported on Android.
     * **public bool autoPlay**: If true, the players will start playing automatically after set-up.
     * **public bool EnableRendering**: Determines if the stream will be rendered or not. The value can change in every moment for toggling between render or non-render mode. If true, the player will be rendered. It only can change in runtime.
     * **public bool FlipTextureVertically**: Flip the texture of the stream vertically. This applies for Material, RenderTexture and RawImage. This value should be called before **SetUpPlayer**  or **AddStream** functions. Only supported on Android.
@@ -27,6 +27,7 @@ The following public APIs are provided by **HISPlayerManager**:
     * **public HISPlayerAmbisonicAudio AmbisonicAudio (Read-only)**: Ambisonics audio supporting ambiX format from first order to 3rd order, and TBE format. Enabling Ambisonic will disable Unity Audio. It's set to None or disabled by default. To modify this value, please use the Editor.
     * **public List \<string\> keyServerURI**: List of the DRM license key for each URL.
     * **public List \<DRM_Token\> DRMTokens**: List of the DRM tokens for each URL.   
+    * **public List \<HTTPHeaderList\> CustomHTTPHeaders**: List of the custom HTTP headers attached to each URL from the url list, one **HTTPHeaderList** per URL. See [Custom HTTP Headers](/custom-http-headers.md) for more details.
 
 * **public struct DRM_Token**: Information for the DRM token:
     * **public string tokenKey**: Key of the token associated with the URL.
@@ -157,11 +158,39 @@ The following public APIs are provided by **HISPlayerManager**:
    * **public float line**: The vertical position of the text cue box, interpreted as either a 0.0–1.0 fraction.
  
 * **public struct VideoSourceOptions**: The information of optional parameters for **AddVideoContent** and **ChangeVideoContent** APIs.
-   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public ExternalSubtitleList ExternalSubtitles**: The external subtitles of the URL. Each subtitle is added as a caption track with its language: it appears in **GetCaptionTrackList** and can be selected with **SelectCaptionTrack**. Only supported on Android.
+   * **public HTTPHeaderList HTTPHeadersList**: The custom HTTP headers to be sent with the requests for the URL.
    * **public string keyServerURI**: The DRM license key for each URL.
    * **public string tokenKey**: The key of the token associated with the URL.
    * **public string tokenValue**: The value of the token associated with the key.
    * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
+
+* **public class ExternalSubtitle**: Information for an external subtitle file:
+    * **public string url**: URL of the subtitle file. WebVTT and SRT formats are supported. Files whose path ends in **.srt** are read as SRT, any other as WebVTT.
+    * **public string language**: Language of the subtitle as an ISO 639-1 code, e.g. "en" or "es". This is the language reported by **GetCaptionTrackList**. It is required, and each subtitle of the same URL must have a different language, since caption tracks are selected by language.
+
+* **public class ExternalSubtitleList**: Wrapper class for the list of external subtitles of a URL.
+    * **public List \<ExternalSubtitle\> subtitles**: List of external subtitles.
+    * **public int Count (Read-only)**: Number of external subtitles.
+    * **public void Add(string url, string language)**: Adds a new external subtitle given a **url** and a **language**.
+    * **public void Add(ExternalSubtitle subtitle)**: Adds an existing **ExternalSubtitle**.
+    * **public bool Remove(ExternalSubtitle subtitle)**: Removes a specific **ExternalSubtitle**. Returns true if the subtitle was removed.
+    * **public void Clear()**: Removes all external subtitles.
+
+* **public class HTTPHeader**: Information for a custom HTTP header:
+    * **public string key**: Key of the HTTP header.
+    * **public string value**: Value of the HTTP header.
+
+* **public class HTTPHeaderList**: Wrapper class for a list of custom HTTP headers.
+    * **public List \<HTTPHeader\> headers**: List of HTTP headers.
+    * **public int Count (Read-only)**: Number of HTTP headers.
+    * **public void Add(string key, string value)**: Adds a new HTTP header given a **key** and a **value**.
+    * **public void Add(HTTPHeader header)**: Adds an existing **HTTPHeader**.
+    * **public bool Remove(string key)**: Removes the first header matching the given **key**. Returns true if a header was removed.
+    * **public bool Remove(HTTPHeader header)**: Removes a specific **HTTPHeader**. Returns true if the header was removed.
+    * **public void Clear()**: Removes all HTTP headers.
+    * **public bool Contains(string key)**: Returns true if a header with the given **key** exists.
+    * **public string Get(string key)**: Returns the value of the header matching the given **key**, or null if it does not exist.
 
 ## Functions
 The following functions are provided by **HISPlayerManager**. They are not public so it’s necessary to create a custom script which inherits from **HISPlayerManager**.
@@ -414,16 +443,24 @@ Add new content to a certain player and its respective key server uri and tokens
 
 #### void AddVideoContent(int playerIndex, string url, VideoSourceOptions options = default)
 Add new content to a certain player with **VideoSourceOptions** which contains optional parameters. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **url** is the link to the new video. The **VideoSourceOptions** contains the following optional parameters:
-   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public ExternalSubtitleList ExternalSubtitles**: The external subtitles of the URL. Each subtitle is added as a caption track with its language: it appears in **GetCaptionTrackList** and can be selected with **SelectCaptionTrack**. Only supported on Android.
+   * **public HTTPHeaderList HTTPHeadersList**: The custom HTTP headers to be sent with the requests for the URL.
    * **public string keyServerURI**: The DRM license key for each URL.
    * **public string tokenKey**: The key of the token associated with the URL.
    * **public string tokenValue**: The value of the token associated with the key.
    * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
 
 Usage example: 
+```csharp
+ExternalSubtitleList subtitles = new ExternalSubtitleList();
+subtitles.Add("https://.../subtitles_en.vtt", "en");
+subtitles.Add("https://.../subtitles_es.srt", "es");
+
+AddVideoContent(playerIndex, "https://...", new VideoSourceOptions { ExternalSubtitles = subtitles, keyServerURI = "https://..."})
 ```
-AddVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})
-```
+
+#### void AddVideoContent(int playerIndex, string url, HTTPHeaderList httpHeaderList, HISPlayerMimeTypes mimeType = HISPlayerMimeTypes.URL_EXTENSION (optional))
+Add new content to a certain player including custom HTTP headers. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **url** is the link to the new video. Please, make sure the string is correct. This function supports local file paths. The **httpHeaderList** contains the custom HTTP headers that will be attached to the requests for this content. The parameter **mimeType** is optional and indicates which MIME type will be used for the new url.
 
 #### void ChangeVideoContent(int playerIndex, int urlIndex)
 Change the video’s URL  of a certain player. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **urlIndex** is associated with the index of the element in the list of URLs.
@@ -439,16 +476,24 @@ Change the video’s URL of a certain player given a new URL with DRM protection
 
 #### void ChangeVideoContent(int playerIndex, string url, VideoSourceOptions options = default)
 Change the video’s URL of a certain player given a new URL with **VideoSourceOptions** which contains optional parameters. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The parameter **url** is the link to the new video. The **VideoSourceOptions** contains the following optional parameters:
-   * **public string extSubtitleURL**: The external subtitle URL.
+   * **public ExternalSubtitleList ExternalSubtitles**: The external subtitles of the URL. Each subtitle is added as a caption track with its language: it appears in **GetCaptionTrackList** and can be selected with **SelectCaptionTrack**. Only supported on Android.
+   * **public HTTPHeaderList HTTPHeadersList**: The custom HTTP headers to be sent with the requests for the URL.
    * **public string keyServerURI**: The DRM license key for each URL.
    * **public string tokenKey**: The key of the token associated with the URL.
    * **public string tokenValue**: The value of the token associated with the key.
    * **public HISPlayerMimeTypes mimeType**: The MIME type to be used.
 
 Usage example: 
+```csharp
+ExternalSubtitleList subtitles = new ExternalSubtitleList();
+subtitles.Add("https://.../subtitles_en.vtt", "en");
+subtitles.Add("https://.../subtitles_es.srt", "es");
+
+ChangeVideoContent(playerIndex, "https://...", new VideoSourceOptions { ExternalSubtitles = subtitles, keyServerURI = "https://..."})
 ```
-ChangeVideoContent(playerIndex, "https://...", new VideoSourceOptions { extSubtitleURL = "https://...",  keyServerURI = "https://..."})
-```
+
+#### void ChangeVideoContent(int playerIndex, string url, HTTPHeaderList httpHeaderList)
+Change the video's URL of a certain player given a new URL including custom HTTP headers. The next playback will start paused if **autoPlay** is disabled. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The parameter **url** is the link to the new video. Please, make sure the new URL is correctly written. This function supports local file paths. This function will replace the Playlist with the new URL. The **httpHeaderList** contains the custom HTTP headers that will be attached to the requests for this content.
 
 #### void RemoveVideoContent(int playerIndex, int urlIndex)
 Remove content from a certain player. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list.  The **urlIndex** is associated with the index of the element in the list of URLs.
