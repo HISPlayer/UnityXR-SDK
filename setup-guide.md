@@ -177,10 +177,6 @@ This scene demonstrates high-resolution video playback using **RenderTexture** r
 
 This scene demonstrates a Widevine DRM L1 protected video playback using **ExternalSurface** render mode. For more details about DRM, refer to [**DRM**](/drm.md) page.
 
-#### DRM Scene
-
-This scene demonstrates DRM video playback using **RenderTexture**  render mode.
-
 #### 360° Scene
 
 This scene demonstrates 360° video playback using **External Surface** render mode. **XR Layer Projection** option is set to **Equirect 360**.
