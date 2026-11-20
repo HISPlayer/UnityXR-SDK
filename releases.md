@@ -2,7 +2,7 @@
 
 ### Version 6.1.0
 ##### November 20, 2026
-- [**Added**] Offline playback support. Content can be downloaded and stored locally through the new HLS/DASH Downloader and played back without network connection.
+- [**Added**] Download and offline playback support for HLS/DASH, DRM, Progressive Download contents.
 - [**Added**] Multiple external subtitle tracks per video.
 - [**Added**] Custom HTTP Authorization Headers support.
 
