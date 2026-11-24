@@ -1,9 +1,10 @@
 # HISPlayer Unity XR SDK Release Notes
 
-### Version 6.1.1
-##### November xx, 2026
-- [**Added**] Add **void AddStream(StreamProperties newStream, out int playerIndex)** API.
-- [**Improved**] Fixed adding new ambisonic streaming while playing.
+### Version 6.2.0
+##### November 24, 2026
+- [**Added**] **AddStream(StreamProperties newStream, out int playerIndex)** API.
+- [**Added**] Ambisonics multistreams.
+- [**Improved**] Optimized adding new ambisonics streams at runtime.
 - [**Improved**] Fixed crash when running on Development mode.
 
 ### Version 6.1.0
