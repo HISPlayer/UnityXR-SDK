@@ -435,6 +435,10 @@ Modify the volume of a certain stream giving a **playerIndex**. The **volume** o
 #### void AddStream(StreamProperties newStream)
 Add a new stream to the list multiStreamProperties. The stream must be added using this function instead of changing the list manually.
 
+#### void AddStream(StreamProperties newStream, out int playerIndex)
+Add a new stream to the list multiStreamProperties. The stream must be added using this function instead of changing the list manually.
+The **playerIndex** is the index of created new multiStreamProperties. This **playerIndex** value should be used when call other APIs like **RemoveStream(int playerIndex)**.
+
 #### void AddVideoContent(int playerIndex, string url, HISPlayerMimeTypes mimeType = HISPlayerMimeTypes.URL_EXTENSION (optional))
 Add new content to a certain player. If the **enableDRM** variable is true, a video content with an empty license will be added. The **playerIndex** is associated with the index of the element of **Multi Stream Properties**, e.g. the index 0 is the element 0 in the list. The **url** is the link to the new video. Please, make sure the string is correct. This function supports local file paths. The parameter **mimeType** is optional and indicates which MIME type will be used for the new url.
 
