@@ -16,7 +16,6 @@ It’s required to set **AmbisonicAudio** property in MultistreamProperties thro
 * Only Opus audio codec is supported. Opus is the recommended codec for Ambisonic audio.
 * MKV video container is recommended.
 * Recommended audio sample rate is 48000Hz.
-* Multistream mode with ambisonics is not supported.
 
 For more details, please refer to below APIs section.
 
