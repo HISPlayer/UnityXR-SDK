@@ -5,7 +5,7 @@
 - [**Added**] **AddStream(StreamProperties newStream, out int playerIndex)** API.
 - [**Added**] Ambisonics multistreams.
 - [**Improved**] Optimized adding new ambisonics streams at runtime.
-- [**Improved**] Fixed crash when running on Development mode.
+- [**Improved**] Optimized Development build mode.
 
 ### Version 6.1.0
 ##### November 20, 2026
