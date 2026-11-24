@@ -4,6 +4,7 @@
 ##### November xx, 2026
 - [**Added**] Add **void AddStream(StreamProperties newStream, out int playerIndex)** API.
 - [**Improved**] Fixed adding new ambisonic streaming while playing.
+- [**Improved**] Fixed crash when running on Development mode.
 
 ### Version 6.1.0
 ##### November 20, 2026
