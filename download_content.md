@@ -4,12 +4,12 @@ The HISPlayer SDK supports downloading video content for offline playback.
 If you received a license key from HISPlayer, input the license key through the Unity Inspector window: **DownloadController GameObject > HISPlayer Download Sample (Script)** component > **License Key**.
 
 <p align="center">
-<img src="image-3.png" width="400">
+<img src="image-6.png" width="650">
 </p>
 
 ### Script
 
-Please check the `Assets/OpenXRSample/Scripts/Sample/HISPlayerDownloadSample.cs` script. The script must inherit from `HISPlayerDownloadManager`. It is also necessary to add the `using HISPlayerAPI;` dependency.
+Please check the `Assets/HISPlayerOpenXRSample/Scripts/Sample/HISPlayerDownloadSample.cs` script. The script must inherit from `HISPlayerDownloadManager`. It is also necessary to add the `using HISPlayerAPI;` dependency.
 
 ```csharp
 using System;
