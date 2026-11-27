@@ -1,5 +1,10 @@
 # HISPlayer Unity XR SDK Release Notes
 
+### Version 6.3.0
+##### November XX, 2026
+- [**Improvement**] Support Unity 6.6.
+- [**Improvement**] Optimized ambisomics when pause and resme application.
+
 ### Version 6.2.0
 ##### November 24, 2026
 - [**Added**] **AddStream(StreamProperties newStream, out int playerIndex)** API.
